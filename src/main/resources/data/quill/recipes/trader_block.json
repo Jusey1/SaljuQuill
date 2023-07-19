@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BBB",
+    "#X#",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "tag": "minecraft:planks"
+    },
+    "X": {
+      "item": "minecraft:bell"
+    },
+    "B": {
+      "item": "minecraft:blue_wool"
+    }
+  },
+  "result": {
+    "item": "quill:trader_block",
+    "count": 1
+  }
+}

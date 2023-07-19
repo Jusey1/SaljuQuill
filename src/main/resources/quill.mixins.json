@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "package": "net.salju.quill.mixins",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "quill.refmap.json",
+  "mixins": [
+     "CrossbowItemMixin",
+     "ArrowInfiniteEnchantmentMixin",
+     "DamageEnchantmentMixin",
+     "DiggerItemMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "minVersion": "0.8"
+}
