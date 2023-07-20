@@ -5,9 +5,11 @@
   "refmap": "quill.refmap.json",
   "mixins": [
      "CrossbowItemMixin",
-     "ArrowInfiniteEnchantmentMixin",
+     "DiggerItemMixin",
+     "HorseArmorItemMixin",
+     "EnchantmentHelperMixin",
      "DamageEnchantmentMixin",
-     "DiggerItemMixin"
+     "ArrowInfiniteEnchantmentMixin"
   ],
   "injectors": {
     "defaultRequire": 1

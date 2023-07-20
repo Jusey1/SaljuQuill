@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import net.salju.quill.init.QuillEnchantments;
 
 import net.minecraft.world.level.Level;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Item;
@@ -26,5 +27,8 @@ public abstract class CrossbowItemMixin extends ProjectileWeaponItem {
 		AbstractArrow arrow = info.getReturnValue();
 		int sharpshooter = crossbow.getEnchantmentLevel(QuillEnchantments.SHARPSHOOTER.get());
 		arrow.getPersistentData().putDouble("Sharpshooter", sharpshooter);
+		if (crossbow.getEnchantmentLevel(Enchantments.INFINITY_ARROWS) > 0) {
+			arrow.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
+		}
 	}
 }
