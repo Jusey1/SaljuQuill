@@ -1,33 +1,23 @@
 {
-  "mod_elements": [
-    {
-      "name": "QuillEvents",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": true,
-      "registry_name": "quill_events",
-      "metadata": {
-        "files": [
-          "src/main/java/net/salju/quill/procedures/QuillEventsProcedure.java"
-        ],
-        "dependencies": [
-          {
-            "name": "entity",
-            "type": "entity"
-          }
-        ]
-      }
-    }
-  ],
+  "mod_elements": [],
   "variable_elements": [],
   "sound_elements": [],
   "language_map": {
     "en_us": {
+      "item.quill.netherite_horse_armor": "Netherite Horse Armor",
       "enchantment.quill.auto_smelt.desc": "Automatically smelts mined ore blocks and sets entities on fire for a few seconds.",
       "enchantment.quill.auto_smelt": "Auto-Smelt",
       "enchantment.quill.sharpshooter": "Sharpshooter",
       "block.quill.trader_block": "Trader Block",
       "enchantment.quill.sharpshooter.desc": "Increases the damage of arrows shot by the Crossbow."
+    },
+    "zh_cn": {
+      "item.quill.netherite_horse_armor": "下界合金马甲",
+      "enchantment.quill.auto_smelt.desc": "直接熔炼出矿石，攻击生物时附带燃烧。",
+      "enchantment.quill.auto_smelt": "冶炼",
+      "enchantment.quill.sharpshooter": "神射手",
+      "block.quill.trader_block": "贸易方块",
+      "enchantment.quill.sharpshooter.desc": "增加从弩射出箭的伤害。"
     }
   },
   "foldersRoot": {
@@ -37,7 +27,7 @@
   "workspaceSettings": {
     "modid": "quill",
     "modName": "Salju\u0027s Quill",
-    "version": "1.1.0",
+    "version": "1.1.2",
     "description": "Small collection of edits",
     "author": "Jusey1",
     "websiteURL": "https://discord.gg/s7QaYGUzZU",
@@ -50,7 +40,7 @@
     "dependants": [],
     "mcreatorDependencies": [],
     "currentGenerator": "forge-1.20.1",
-    "credits": "Jusey1",
+    "credits": "Jusey1, Burack",
     "modElementsPackage": "net.salju.quill",
     "lockBaseModFiles": true
   },
