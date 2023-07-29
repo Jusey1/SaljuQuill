@@ -4,9 +4,9 @@ license="MIT License"
 
 [[mods]]
 modId="quill"
-version="1.1.0"
+version="1.1.2"
 displayName="Salju's Quill"
-credits="Jusey1"
+credits="Jusey1, Burack"
 displayURL="https://discord.gg/s7QaYGUzZU"
 logoFile="logo.png"
 authors="Jusey1"
