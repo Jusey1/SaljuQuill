@@ -9,7 +9,8 @@
      "HorseArmorItemMixin",
      "EnchantmentHelperMixin",
      "DamageEnchantmentMixin",
-     "ArrowInfiniteEnchantmentMixin"
+     "ArrowInfiniteEnchantmentMixin",
+     "CreeperMixin"
   ],
   "injectors": {
     "defaultRequire": 1

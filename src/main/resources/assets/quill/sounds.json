@@ -1,0 +1,11 @@
+{
+  "cheers": {
+    "subtitle": "subtitles.cheers",
+    "sounds": [
+      {
+        "name": "quill:cheer_effect",
+        "stream": false
+      }
+    ]
+  }
+}
