@@ -6,11 +6,15 @@
   "mixins": [
      "CrossbowItemMixin",
      "DiggerItemMixin",
+     "SwordItemMixin",
      "HorseArmorItemMixin",
      "EnchantmentHelperMixin",
      "DamageEnchantmentMixin",
      "ArrowInfiniteEnchantmentMixin",
      "CreeperMixin"
+  ],
+  "client": [
+    "ItemInHandRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

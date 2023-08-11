@@ -27,32 +27,32 @@ import java.util.List;
 
 @Mixin(Creeper.class)
 public class CreeperMixin {
-	private boolean check;
+	private int check;
 
 	@Inject(method = "explodeCreeper", at = @At(value = "INVOKE"), cancellable = true)
 	private void boom(CallbackInfo ci) {
-		if (check != true) {
-			check = true;
-			Creeper creeper = (Creeper) (Object) this;
-			double x = creeper.getX();
-			double y = creeper.getY();
-			double z = creeper.getZ();
-			boolean powered = creeper.isPowered();
-			Level world = creeper.level();
+		Creeper creeper = (Creeper) (Object) this;
+		double x = creeper.getX();
+		double y = creeper.getY();
+		double z = creeper.getZ();
+		boolean powered = creeper.isPowered();
+		Level world = creeper.level();
+		check++;
+		if (check <= 1) {
 			world.playLocalSound(x, y, z, SoundEvents.FIREWORK_ROCKET_TWINKLE, SoundSource.HOSTILE, 1.0F, 1.0F, false);
 			if (powered || (Math.random() <= 0.12)) {
 				world.playLocalSound(x, y, z, QuillModSounds.CHEERS.get(), SoundSource.HOSTILE, 2.0F, 1.0F, false);
 			}
-			if (world.isClientSide) {
+			if (world instanceof ClientLevel lvl) {
 				ParticleEngine eng = Minecraft.getInstance().particleEngine;
-				eng.add(new FireworkParticles.Starter((ClientLevel) world, x, y + 0.5F, z, 0, 0, 0, eng, getPride(creeper)));
+				eng.add(new FireworkParticles.Starter(lvl, x, y + 0.5F, z, 0, 0, 0, eng, getPride(creeper)));
 			}
-			QuillMod.queueServerWork(2, () -> {
-				float f = powered ? 2.0F : 1.0F;
-				Explosion demoman = new Explosion(world, creeper, null, null, x, y, z, 3.0F * f, false, Explosion.BlockInteraction.KEEP);
-				demoman.explode();
-				creeper.discard();
-			});
+		}
+		if (check >= 2) {
+			float f = powered ? 2.0F : 1.0F;
+			Explosion demoman = new Explosion(world, creeper, null, null, x, y, z, 3.0F * f, false, Explosion.BlockInteraction.KEEP);
+			demoman.explode();
+			creeper.discard();
 		}
 		ci.cancel();
 	}

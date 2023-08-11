@@ -11,6 +11,7 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingGetProjectileEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Block;
@@ -19,6 +20,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStack;
@@ -38,6 +40,7 @@ import net.minecraft.world.damagesource.CombatRules;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Mth;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.resources.ResourceLocation;
@@ -69,11 +72,30 @@ public class QuillEvents {
 						target.setSecondsOnFire(3);
 					}
 				}
-			}
-			if (target.isUsingItem()) {
-				ItemStack stack = target.getUseItem();
-				if (stack.getUseDuration() <= 64) {
-					target.stopUsingItem();
+				if (target.isUsingItem()) {
+					ItemStack stack = target.getUseItem();
+					if (stack.getItem() instanceof SwordItem sword && isSwordBlocked(event.getSource(), target)) {
+						float d = (sword.getDamage() + EnchantmentHelper.getDamageBonus(stack, attacker.getMobType()) + stack.getEnchantmentLevel(Enchantments.SWEEPING_EDGE));
+						event.setAmount(damage * 0.65F);
+						target.swing(target.getUsedItemHand());
+						if (target instanceof Player player) {
+							attacker.hurt(player.damageSources().playerAttack(player), d);
+							if (player.level() instanceof ServerLevel lvl && d > 2.0F) {
+								int i = (int)(d * 0.5F);
+								lvl.sendParticles(ParticleTypes.DAMAGE_INDICATOR, attacker.getX(), attacker.getY(0.5), attacker.getZ(), i, 0.1, 0.0, 0.1, 0.2);
+							}
+						} else {
+							attacker.hurt(target.damageSources().mobAttack(target), d);
+						}
+						sword.hurtEnemy(stack, attacker, target);
+					}
+					if (stack.getUseDuration() <= 64) {
+						target.stopUsingItem();
+						if (target instanceof Player player) {
+							int i = (stack.getItem() instanceof SwordItem ? 30 : 12);
+							player.getCooldowns().addCooldown(stack.getItem(), i);
+						}
+					}
 				}
 			}
 		}
@@ -175,5 +197,20 @@ public class QuillEvents {
 				event.setCanceled(true);
 			}
 		}
+	}
+
+	private static boolean isSwordBlocked(DamageSource source, LivingEntity target) {
+		if (!source.is(DamageTypeTags.BYPASSES_SHIELD)) {
+			Vec3 vec32 = source.getSourcePosition();
+			if (vec32 != null) {
+				Vec3 vec3 = target.getViewVector(1.0F);
+				Vec3 vec31 = vec32.vectorTo(target.position()).normalize();
+				vec31 = new Vec3(vec31.x, 0.0D, vec31.z);
+				if (vec31.dot(vec3) < 0.0D) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }
