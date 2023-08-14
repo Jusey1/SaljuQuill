@@ -28,4 +28,4 @@ public abstract class ItemInHandRendererMixin {
 			pose.mulPose(Axis.ZP.rotationDegrees(r));
 		}
 	}
-}
+}
