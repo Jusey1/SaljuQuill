@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import net.salju.quill.init.QuillModSounds;
 
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Mth;
@@ -48,7 +49,8 @@ public class CreeperMixin {
 		}
 		if (check >= 2) {
 			float f = powered ? 2.0F : 1.0F;
-			world.explode(creeper, null, null, x, y, z, 3.0F * f, false, Level.ExplosionInteraction.NONE, false);
+			Explosion demoman = new Explosion(world, creeper, x, y, z, 3.0F * f, false, Explosion.BlockInteraction.KEEP);
+			demoman.explode();
 			creeper.discard();
 		}
 		ci.cancel();

@@ -4,12 +4,14 @@ import net.salju.quill.init.QuillEnchantments;
 
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.CriticalHitEvent;
 import net.minecraftforge.event.entity.living.ShieldBlockEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingGetProjectileEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.common.Tags;
 
@@ -31,9 +33,14 @@ import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.animal.camel.Camel;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ExperienceOrb;
@@ -45,6 +52,7 @@ import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.CombatRules;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Mth;
 import net.minecraft.tags.DamageTypeTags;
@@ -83,8 +91,8 @@ public class QuillEvents {
 				if (target.isUsingItem()) {
 					ItemStack stack = target.getUseItem();
 					if (stack.getItem() instanceof SwordItem sword && isSwordBlocked(event.getSource(), target)) {
-						float d = (sword.getDamage() + EnchantmentHelper.getDamageBonus(stack, attacker.getMobType()) + stack.getEnchantmentLevel(Enchantments.SWEEPING_EDGE));
-						event.setAmount(damage * 0.65F);
+						float d = ((sword.getDamage() - 2.0F) + (EnchantmentHelper.getDamageBonus(stack, attacker.getMobType()) * 0.5F) + stack.getEnchantmentLevel(Enchantments.SWEEPING_EDGE));
+						event.setAmount(damage * 0.75F);
 						target.swing(target.getUsedItemHand());
 						if (target instanceof Player player) {
 							attacker.hurt(player.damageSources().playerAttack(player), d);
@@ -141,7 +149,7 @@ public class QuillEvents {
 		DamageSource source = event.getDamageSource();
 		ItemStack stack = target.getUseItem();
 		if (source.is(DamageTypes.EXPLOSION) || source.is(DamageTypes.PLAYER_EXPLOSION)) {
-			target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 1200, 0));
+			target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 200, 0));
 			target.stopUsingItem();
 			if (target instanceof Player player) {
 				player.getCooldowns().addCooldown(stack.getItem(), 200);
@@ -172,6 +180,40 @@ public class QuillEvents {
 				event.setProjectileItemStack(new ItemStack(Items.ARROW));
 			} else if (arrow.getItem() == Items.ARROW) {
 				event.setProjectileItemStack(arrow.copy());
+			}
+		}
+	}
+
+	@SubscribeEvent
+	public static void onTrades(VillagerTradesEvent event) {
+		if (event.getType() == VillagerProfession.LIBRARIAN) {
+			VillagerTrades.ItemListing book = new EnchantBookMaster(25);
+			final var list = event.getTrades().get(5);
+			list.add(book);
+			event.getTrades().put(5, list);
+		}
+	}
+
+	@SubscribeEvent
+	public static void onTick(LivingEvent.LivingTickEvent event) {
+		if (event.getEntity() instanceof Villager target) {
+			Player player = target.level().getNearestPlayer(target, 2);
+			if (player != null && player.isPassenger()) {
+				Entity mount = player.getVehicle();
+				if ((mount instanceof Camel || mount instanceof Boat) && mount.getPassengers().size() < 2) {
+					target.startRiding(mount);
+				}
+			}
+		}
+	}
+
+	@SubscribeEvent
+	public static void onRightClickEntity(PlayerInteractEvent.EntityInteract event) {
+		Player player = event.getEntity();
+		if (event.getTarget() instanceof Villager target) {
+			if (target.isPassenger() && player.isCrouching()) {
+				target.stopRiding();
+				player.swing(InteractionHand.MAIN_HAND);
 			}
 		}
 	}
