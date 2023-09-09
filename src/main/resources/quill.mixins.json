@@ -12,10 +12,10 @@
      "DamageEnchantmentMixin",
      "ArrowInfiniteEnchantmentMixin",
      "CreeperMixin",
-     "VillagerTradesMixin"
+     "VillagerEnchantedBookMixin"
   ],
   "client": [
-    "ItemInHandRendererMixin"
+     "ItemInHandRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

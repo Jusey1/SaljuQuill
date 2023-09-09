@@ -1,9 +1,16 @@
 {
+  "filled_map.villager.swamp": "Swamp Explorer Map",
+  "filled_map.villager.jungle": "Jungle Explorer Map",
   "item.quill.netherite_horse_armor": "Netherite Horse Armor",
+  "filled_map.villager.savanna": "Savanna Village Map",
+  "block.quill.trader_block": "Trader Block",
+  "enchantment.quill.sharpshooter.desc": "Increases the damage of arrows shot by the Crossbow.",
+  "filled_map.villager.plains": "Plains Village Map",
   "enchantment.quill.auto_smelt.desc": "Automatically smelts mined ore blocks and sets entities on fire for a few seconds.",
   "subtitles.cheers": "*Cheers*",
+  "filled_map.villager.desert": "Desert Village Map",
   "enchantment.quill.auto_smelt": "Auto-Smelt",
+  "filled_map.villager.taiga": "Taiga Village Map",
   "enchantment.quill.sharpshooter": "Sharpshooter",
-  "block.quill.trader_block": "Trader Block",
-  "enchantment.quill.sharpshooter.desc": "Increases the damage of arrows shot by the Crossbow."
+  "filled_map.villager.snowy": "Snowy Village Map"
 }

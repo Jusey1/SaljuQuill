@@ -1,5 +1,6 @@
 package net.salju.quill.events;
 
+import net.salju.quill.init.QuillVillagers;
 import net.salju.quill.init.QuillEnchantments;
 
 import net.minecraftforge.fml.common.Mod;
@@ -13,6 +14,7 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingGetProjectileEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.common.Tags;
 
 import net.minecraft.world.phys.Vec3;
@@ -36,8 +38,8 @@ import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.entity.npc.VillagerData;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.animal.camel.Camel;
@@ -57,6 +59,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.util.Mth;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.BiomeTags;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.server.level.ServerLevel;
@@ -186,11 +189,71 @@ public class QuillEvents {
 
 	@SubscribeEvent
 	public static void onTrades(VillagerTradesEvent event) {
+		final var basic = event.getTrades().get(1);
+		final var second = event.getTrades().get(2);
+		final var middle = event.getTrades().get(3);
+		final var expert = event.getTrades().get(4);
+		final var master = event.getTrades().get(5);
 		if (event.getType() == VillagerProfession.LIBRARIAN) {
-			VillagerTrades.ItemListing book = new EnchantBookMaster(25);
-			final var list = event.getTrades().get(5);
-			list.add(book);
-			event.getTrades().put(5, list);
+			master.add(new QuillVillagerManager.EnchantBookMaster(25));
+			event.getTrades().put(5, master);
+		} else if (event.getType() == VillagerProfession.FISHERMAN) {
+			master.remove(1);
+			master.add(new QuillVillagerManager.FishermanMaster(25));
+			event.getTrades().put(5, master);
+		} else if (event.getType() == VillagerProfession.WEAPONSMITH || event.getType() == VillagerProfession.TOOLSMITH || event.getType() == VillagerProfession.ARMORER) {
+			basic.removeAll(basic);
+			second.removeAll(second);
+			middle.removeAll(middle);
+			expert.removeAll(expert);
+			master.removeAll(master);
+			basic.add(new QuillVillagerManager.EmeraldForItems(Items.COAL, 15, 16, 2, 1));
+			basic.add(new QuillVillagerManager.EmeraldForItems(Items.IRON_INGOT, 5, 16, 2, 1));
+			if (event.getType() == VillagerProfession.ARMORER) {
+				second.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_HELMET, 4, 12, 5, false));
+				second.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_CHESTPLATE, 9, 12, 5, false));
+				second.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_LEGGINGS, 7, 12, 5, false));
+				second.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_BOOTS, 5, 12, 5, false));
+				middle.add(new QuillVillagerManager.EmeraldForItems(Items.LAVA_BUCKET, 1, 12, 15, 1));
+				middle.add(new QuillVillagerManager.ItemsForEmeralds(Items.SHIELD, 5, 12, 15, 1));
+				expert.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_HELMET, 4, 12, 25, true));
+				expert.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_CHESTPLATE, 9, 12, 25, true));
+				expert.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_LEGGINGS, 7, 12, 25, true));
+				expert.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_BOOTS, 5, 12, 25, true));
+				master.add(new QuillVillagerManager.DiamondForEmeralds(Items.DIAMOND_HELMET, 12, 2, 12, 25, true));
+				master.add(new QuillVillagerManager.DiamondForEmeralds(Items.DIAMOND_CHESTPLATE, 16, 4, 12, 25, true));
+				master.add(new QuillVillagerManager.DiamondForEmeralds(Items.DIAMOND_LEGGINGS, 16, 3, 12, 25, true));
+				master.add(new QuillVillagerManager.DiamondForEmeralds(Items.DIAMOND_BOOTS, 12, 2, 12, 25, true));
+			} else {
+				second.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_AXE, 3, 12, 5, false));
+				middle.add(new QuillVillagerManager.EmeraldForItems(Items.DIAMOND, 1, 12, 15, 1));
+				middle.add(new QuillVillagerManager.EmeraldForItems(Items.FLINT, 24, 16, 15, 1));
+				expert.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_AXE, 3, 12, 25, true));
+				master.add(new QuillVillagerManager.DiamondForEmeralds(Items.DIAMOND_AXE, 12, 2, 12, 25, true));
+			}
+			if (event.getType() == VillagerProfession.WEAPONSMITH) {
+				second.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_SWORD, 2, 12, 5, false));
+				expert.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_SWORD, 2, 12, 25, true));
+				master.add(new QuillVillagerManager.DiamondForEmeralds(Items.DIAMOND_SWORD, 12, 2, 12, 25, true));
+			} else if (event.getType() == VillagerProfession.TOOLSMITH) {
+				second.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_HOE, 2, 12, 5, false));
+				second.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_SHOVEL, 2, 12, 5, false));
+				second.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_PICKAXE, 2, 12, 5, false));
+				expert.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_HOE, 2, 12, 25, true));
+				expert.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_SHOVEL, 2, 12, 25, true));
+				expert.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_PICKAXE, 2, 12, 25, true));
+				master.add(new QuillVillagerManager.DiamondForEmeralds(Items.DIAMOND_HOE, 12, 1, 12, 25, true));
+				master.add(new QuillVillagerManager.DiamondForEmeralds(Items.DIAMOND_SHOVEL, 12, 1, 12, 25, true));
+				master.add(new QuillVillagerManager.DiamondForEmeralds(Items.DIAMOND_PICKAXE, 12, 2, 12, 25, true));
+			}
+			middle.add(new QuillVillagerManager.ItemsForEmeralds(Items.BELL, 36, 12, 15, 1));
+			master.add(new QuillVillagerManager.EmeraldForItems(Items.IRON_BLOCK, 1, 16, 25, 4));
+			master.add(new QuillVillagerManager.EmeraldForItems(Items.DIAMOND_BLOCK, 1, 16, 25, 42));
+			event.getTrades().put(1, basic);
+			event.getTrades().put(2, second);
+			event.getTrades().put(3, middle);
+			event.getTrades().put(4, expert);
+			event.getTrades().put(5, master);
 		}
 	}
 
@@ -203,6 +266,22 @@ public class QuillEvents {
 				if ((mount instanceof Camel || mount instanceof Boat) && mount.getPassengers().size() < 2) {
 					target.startRiding(mount);
 				}
+			}
+		}
+	}
+
+	@SubscribeEvent
+	public static void onEntitySpawned(EntityJoinLevelEvent event) {
+		if (event.getEntity() != null) {
+			Entity entity = event.getEntity();
+			LevelAccessor world = entity.level();
+			double x = entity.getX();
+			double y = entity.getY();
+			double z = entity.getZ();
+			BlockPos pos = BlockPos.containing(x, y, z);
+			if (entity instanceof Villager target && world.getBiome(pos).is(BiomeTags.IS_OCEAN) && target.getVillagerData().getProfession() == VillagerProfession.NONE && target.getVillagerData().getType() != QuillVillagers.OCEAN.get()) {
+				VillagerData data = new VillagerData(QuillVillagers.OCEAN.get(), VillagerProfession.NONE, 1);
+				target.setVillagerData(data);
 			}
 		}
 	}
@@ -313,4 +392,4 @@ public class QuillEvents {
 		}
 		return false;
 	}
-}
+}
