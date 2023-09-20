@@ -1,16 +1,11 @@
 {
-  "filled_map.villager.swamp": "",
-  "filled_map.villager.jungle": "",
   "item.quill.netherite_horse_armor": "下界合金马甲",
-  "filled_map.villager.savanna": "",
-  "block.quill.trader_block": "贸易方块",
-  "enchantment.quill.sharpshooter.desc": "增加从弩射出箭的伤害。",
-  "filled_map.villager.plains": "",
   "enchantment.quill.auto_smelt.desc": "直接熔炼出矿石，攻击生物时附带燃烧。",
   "subtitles.cheers": "*干杯*",
-  "filled_map.villager.desert": "",
   "enchantment.quill.auto_smelt": "冶炼",
-  "filled_map.villager.taiga": "",
+  "enchantment.quill.airstrike": "Airstrike",
+  "enchantment.quill.airstrike.desc": "Allows the trident to give boost during Elytra flight.",
   "enchantment.quill.sharpshooter": "神射手",
-  "filled_map.villager.snowy": ""
+  "block.quill.trader_block": "贸易方块",
+  "enchantment.quill.sharpshooter.desc": "增加从弩射出箭的伤害。"
 }

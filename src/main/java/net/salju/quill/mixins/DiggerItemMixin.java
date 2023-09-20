@@ -1,8 +1,7 @@
 package net.salju.quill.mixins;
 
 import org.spongepowered.asm.mixin.Mixin;
-
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.item.Vanishable;
 import net.minecraft.world.item.TieredItem;

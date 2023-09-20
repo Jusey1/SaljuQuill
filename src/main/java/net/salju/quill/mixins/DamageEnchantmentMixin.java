@@ -1,8 +1,7 @@
 package net.salju.quill.mixins;
 
 import org.spongepowered.asm.mixin.Mixin;
-
-import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.DiggingEnchantment;
 import net.minecraft.world.item.enchantment.DamageEnchantment;
