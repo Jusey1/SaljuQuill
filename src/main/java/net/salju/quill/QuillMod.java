@@ -1,10 +1,11 @@
 package net.salju.quill;
 
-import org.slf4j.Logger;
 import net.salju.quill.init.*;
 
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -14,6 +15,7 @@ import net.minecraft.world.entity.npc.VillagerProfession;
 import java.util.Map;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 
 @Mod("quill")
 public class QuillMod {
@@ -29,6 +31,7 @@ public class QuillMod {
 		QuillMod.debugVillagerLog();
 		QuillVillagers.REGISTRY.register(bus);
 		AxeModItems.REGISTRY.register(bus);
+		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, QuillConfig.CONFIG, "quill-common.toml");
 	}
 
 	public static void debugVillagerLog() {

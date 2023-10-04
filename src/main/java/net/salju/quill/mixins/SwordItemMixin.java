@@ -1,12 +1,13 @@
 package net.salju.quill.mixins;
 
 import org.spongepowered.asm.mixin.Mixin;
-import net.minecraft.world.level.Level;
+import net.salju.quill.init.QuillConfig;
+
+import net.minecraft.world.level.Level;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.SwordItem;
-import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.entity.player.Player;
@@ -22,20 +23,22 @@ public abstract class SwordItemMixin extends TieredItem {
 
 	@Override
 	public int getUseDuration(ItemStack stack) {
-		return 24;
+		return QuillConfig.SWORD.get() ? 24 : super.getUseDuration(stack);
 	}
 
 	@Override
 	public UseAnim getUseAnimation(ItemStack stack) {
-		return UseAnim.BLOCK;
+		return QuillConfig.SWORD.get() ? UseAnim.BLOCK : super.getUseAnimation(stack);
 	}
 
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
-		ItemStack off = player.getItemInHand(InteractionHand.OFF_HAND);
-		if (off.isEmpty() || hand == InteractionHand.OFF_HAND) {
-			player.startUsingItem(hand);
-			return InteractionResultHolder.consume(player.getItemInHand(hand));
+		if (QuillConfig.SWORD.get()) {
+			ItemStack off = player.getItemInHand(InteractionHand.OFF_HAND);
+			if (off.isEmpty() || hand == InteractionHand.OFF_HAND) {
+				player.startUsingItem(hand);
+				return InteractionResultHolder.consume(player.getItemInHand(hand));
+			}
 		}
 		return super.use(world, player, hand);
 	}

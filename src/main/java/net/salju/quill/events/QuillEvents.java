@@ -2,6 +2,7 @@ package net.salju.quill.events;
 
 import net.salju.quill.init.QuillVillagers;
 import net.salju.quill.init.QuillEnchantments;
+import net.salju.quill.init.QuillConfig;
 
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -85,7 +86,7 @@ public class QuillEvents {
 				event.setAmount((float) (Math.round(Mth.nextInt(RandomSource.create(), 7, 11)) + (2.5 * x)));
 			} else if (direct instanceof LivingEntity attacker) {
 				ItemStack weapon = attacker.getMainHandItem();
-				if (weapon.getItem() instanceof PickaxeItem) {
+				if (weapon.getItem() instanceof PickaxeItem && QuillConfig.PICKMAN.get()) {
 					pickaxe = event.getAmount();
 					if (weapon.getEnchantmentLevel(QuillEnchantments.AUTO_SMELT.get()) > 0) {
 						target.setSecondsOnFire(3);
@@ -108,7 +109,7 @@ public class QuillEvents {
 						}
 						sword.hurtEnemy(stack, attacker, target);
 					}
-					if (stack.getUseDuration() <= 64) {
+					if (stack.getUseDuration() <= 64 && QuillConfig.USER.get()) {
 						target.stopUsingItem();
 						if (target instanceof Player player) {
 							int i = (stack.getItem() instanceof SwordItem ? 30 : 12);
@@ -122,13 +123,13 @@ public class QuillEvents {
 
 	@SubscribeEvent
 	public static void onDamage(LivingDamageEvent event) {
-		if (event != null && event.getEntity() != null && event.getSource().getDirectEntity() != null) {
+		if (event.getEntity() != null && event.getSource().getDirectEntity() != null) {
 			Entity direct = event.getSource().getDirectEntity();
 			LivingEntity target = event.getEntity();
 			DamageSource source = event.getSource();
 			if (direct instanceof LivingEntity attacker) {
 				ItemStack weapon = attacker.getMainHandItem();
-				if (weapon.getItem() instanceof PickaxeItem) {
+				if (weapon.getItem() instanceof PickaxeItem && QuillConfig.PICKMAN.get()) {
 					if (pickaxe != 0 && critical == true) {
 						float armor = ((float) target.getArmorValue() * 0.7F);
 						float at = ((float) target.getAttributeValue(Attributes.ARMOR_TOUGHNESS) * 0.7F);
@@ -148,28 +149,27 @@ public class QuillEvents {
 
 	@SubscribeEvent
 	public static void onBlock(ShieldBlockEvent event) {
-		LivingEntity target = event.getEntity();
-		DamageSource source = event.getDamageSource();
-		ItemStack stack = target.getUseItem();
-		if (source.is(DamageTypes.EXPLOSION) || source.is(DamageTypes.PLAYER_EXPLOSION)) {
-			target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 200, 0));
-			target.stopUsingItem();
-			if (target instanceof Player player) {
-				player.getCooldowns().addCooldown(stack.getItem(), 200);
+		if (QuillConfig.SHIELD.get()) {
+			LivingEntity target = event.getEntity();
+			DamageSource source = event.getDamageSource();
+			if (source.is(DamageTypes.EXPLOSION) || source.is(DamageTypes.PLAYER_EXPLOSION)) {
+				target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 200, 0));
+				target.stopUsingItem();
+				if (target instanceof Player player) {
+					player.getCooldowns().addCooldown(target.getUseItem().getItem(), 200);
+				}
 			}
 		}
 	}
 
 	@SubscribeEvent
 	public static void onCritical(CriticalHitEvent event) {
-		if (event != null && event.getEntity() != null) {
-			Player player = event.getEntity();
-			ItemStack weapon = player.getMainHandItem();
-			if (event.isVanillaCritical()) {
-				if (weapon.getItem() instanceof PickaxeItem) {
-					event.setDamageModifier(event.getDamageModifier() + 0.5F);
-					critical = true;
-				}
+		Player player = event.getEntity();
+		ItemStack weapon = player.getMainHandItem();
+		if (event.isVanillaCritical()) {
+			if (weapon.getItem() instanceof PickaxeItem && QuillConfig.PICKMAN.get()) {
+				event.setDamageModifier(event.getDamageModifier() + 0.5F);
+				critical = true;
 			}
 		}
 	}
@@ -194,72 +194,75 @@ public class QuillEvents {
 		final var middle = event.getTrades().get(3);
 		final var expert = event.getTrades().get(4);
 		final var master = event.getTrades().get(5);
-		if (event.getType() == VillagerProfession.LIBRARIAN) {
-			master.add(new QuillVillagerManager.EnchantBookMaster(25));
-			event.getTrades().put(5, master);
-		} else if (event.getType() == VillagerProfession.FISHERMAN) {
+		if (QuillConfig.TRADES.get()) {
+			if (event.getType() == VillagerProfession.LIBRARIAN) {
+				master.add(new QuillVillagerManager.EnchantBookMaster(25));
+				event.getTrades().put(5, master);
+			} else if (event.getType() == VillagerProfession.WEAPONSMITH || event.getType() == VillagerProfession.TOOLSMITH || event.getType() == VillagerProfession.ARMORER) {
+				basic.removeAll(basic);
+				second.removeAll(second);
+				middle.removeAll(middle);
+				expert.removeAll(expert);
+				master.removeAll(master);
+				basic.add(new QuillVillagerManager.EmeraldForItems(Items.COAL, 15, 16, 2, 1));
+				basic.add(new QuillVillagerManager.EmeraldForItems(Items.IRON_INGOT, 5, 16, 2, 1));
+				if (event.getType() == VillagerProfession.ARMORER) {
+					second.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_HELMET, 4, 12, 5, false));
+					second.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_CHESTPLATE, 9, 12, 5, false));
+					second.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_LEGGINGS, 7, 12, 5, false));
+					second.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_BOOTS, 5, 12, 5, false));
+					middle.add(new QuillVillagerManager.EmeraldForItems(Items.LAVA_BUCKET, 1, 12, 15, 1));
+					middle.add(new QuillVillagerManager.ItemsForEmeralds(Items.SHIELD, 5, 12, 15, 1));
+					expert.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_HELMET, 4, 12, 25, true));
+					expert.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_CHESTPLATE, 9, 12, 25, true));
+					expert.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_LEGGINGS, 7, 12, 25, true));
+					expert.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_BOOTS, 5, 12, 25, true));
+					master.add(new QuillVillagerManager.DiamondForEmeralds(Items.DIAMOND_HELMET, 12, 2, 12, 25, true));
+					master.add(new QuillVillagerManager.DiamondForEmeralds(Items.DIAMOND_CHESTPLATE, 16, 4, 12, 25, true));
+					master.add(new QuillVillagerManager.DiamondForEmeralds(Items.DIAMOND_LEGGINGS, 16, 3, 12, 25, true));
+					master.add(new QuillVillagerManager.DiamondForEmeralds(Items.DIAMOND_BOOTS, 12, 2, 12, 25, true));
+				} else {
+					second.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_AXE, 3, 12, 5, false));
+					middle.add(new QuillVillagerManager.EmeraldForItems(Items.DIAMOND, 1, 12, 15, 1));
+					middle.add(new QuillVillagerManager.EmeraldForItems(Items.FLINT, 24, 16, 15, 1));
+					expert.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_AXE, 3, 12, 25, true));
+					master.add(new QuillVillagerManager.DiamondForEmeralds(Items.DIAMOND_AXE, 12, 2, 12, 25, true));
+				}
+				if (event.getType() == VillagerProfession.WEAPONSMITH) {
+					second.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_SWORD, 2, 12, 5, false));
+					expert.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_SWORD, 2, 12, 25, true));
+					master.add(new QuillVillagerManager.DiamondForEmeralds(Items.DIAMOND_SWORD, 12, 2, 12, 25, true));
+				} else if (event.getType() == VillagerProfession.TOOLSMITH) {
+					second.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_HOE, 2, 12, 5, false));
+					second.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_SHOVEL, 2, 12, 5, false));
+					second.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_PICKAXE, 2, 12, 5, false));
+					expert.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_HOE, 2, 12, 25, true));
+					expert.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_SHOVEL, 2, 12, 25, true));
+					expert.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_PICKAXE, 2, 12, 25, true));
+					master.add(new QuillVillagerManager.DiamondForEmeralds(Items.DIAMOND_HOE, 12, 1, 12, 25, true));
+					master.add(new QuillVillagerManager.DiamondForEmeralds(Items.DIAMOND_SHOVEL, 12, 1, 12, 25, true));
+					master.add(new QuillVillagerManager.DiamondForEmeralds(Items.DIAMOND_PICKAXE, 12, 2, 12, 25, true));
+				}
+				middle.add(new QuillVillagerManager.ItemsForEmeralds(Items.BELL, 36, 12, 15, 1));
+				master.add(new QuillVillagerManager.EmeraldForItems(Items.IRON_BLOCK, 1, 16, 25, 4));
+				master.add(new QuillVillagerManager.EmeraldForItems(Items.DIAMOND_BLOCK, 1, 16, 25, 42));
+				event.getTrades().put(1, basic);
+				event.getTrades().put(2, second);
+				event.getTrades().put(3, middle);
+				event.getTrades().put(4, expert);
+				event.getTrades().put(5, master);
+			}
+		}
+		if (event.getType() == VillagerProfession.FISHERMAN && QuillConfig.OCEAN.get()) {
 			master.remove(1);
 			master.add(new QuillVillagerManager.FishermanMaster(25));
-			event.getTrades().put(5, master);
-		} else if (event.getType() == VillagerProfession.WEAPONSMITH || event.getType() == VillagerProfession.TOOLSMITH || event.getType() == VillagerProfession.ARMORER) {
-			basic.removeAll(basic);
-			second.removeAll(second);
-			middle.removeAll(middle);
-			expert.removeAll(expert);
-			master.removeAll(master);
-			basic.add(new QuillVillagerManager.EmeraldForItems(Items.COAL, 15, 16, 2, 1));
-			basic.add(new QuillVillagerManager.EmeraldForItems(Items.IRON_INGOT, 5, 16, 2, 1));
-			if (event.getType() == VillagerProfession.ARMORER) {
-				second.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_HELMET, 4, 12, 5, false));
-				second.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_CHESTPLATE, 9, 12, 5, false));
-				second.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_LEGGINGS, 7, 12, 5, false));
-				second.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_BOOTS, 5, 12, 5, false));
-				middle.add(new QuillVillagerManager.EmeraldForItems(Items.LAVA_BUCKET, 1, 12, 15, 1));
-				middle.add(new QuillVillagerManager.ItemsForEmeralds(Items.SHIELD, 5, 12, 15, 1));
-				expert.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_HELMET, 4, 12, 25, true));
-				expert.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_CHESTPLATE, 9, 12, 25, true));
-				expert.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_LEGGINGS, 7, 12, 25, true));
-				expert.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_BOOTS, 5, 12, 25, true));
-				master.add(new QuillVillagerManager.DiamondForEmeralds(Items.DIAMOND_HELMET, 12, 2, 12, 25, true));
-				master.add(new QuillVillagerManager.DiamondForEmeralds(Items.DIAMOND_CHESTPLATE, 16, 4, 12, 25, true));
-				master.add(new QuillVillagerManager.DiamondForEmeralds(Items.DIAMOND_LEGGINGS, 16, 3, 12, 25, true));
-				master.add(new QuillVillagerManager.DiamondForEmeralds(Items.DIAMOND_BOOTS, 12, 2, 12, 25, true));
-			} else {
-				second.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_AXE, 3, 12, 5, false));
-				middle.add(new QuillVillagerManager.EmeraldForItems(Items.DIAMOND, 1, 12, 15, 1));
-				middle.add(new QuillVillagerManager.EmeraldForItems(Items.FLINT, 24, 16, 15, 1));
-				expert.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_AXE, 3, 12, 25, true));
-				master.add(new QuillVillagerManager.DiamondForEmeralds(Items.DIAMOND_AXE, 12, 2, 12, 25, true));
-			}
-			if (event.getType() == VillagerProfession.WEAPONSMITH) {
-				second.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_SWORD, 2, 12, 5, false));
-				expert.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_SWORD, 2, 12, 25, true));
-				master.add(new QuillVillagerManager.DiamondForEmeralds(Items.DIAMOND_SWORD, 12, 2, 12, 25, true));
-			} else if (event.getType() == VillagerProfession.TOOLSMITH) {
-				second.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_HOE, 2, 12, 5, false));
-				second.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_SHOVEL, 2, 12, 5, false));
-				second.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_PICKAXE, 2, 12, 5, false));
-				expert.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_HOE, 2, 12, 25, true));
-				expert.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_SHOVEL, 2, 12, 25, true));
-				expert.add(new QuillVillagerManager.IronForEmeralds(Items.IRON_PICKAXE, 2, 12, 25, true));
-				master.add(new QuillVillagerManager.DiamondForEmeralds(Items.DIAMOND_HOE, 12, 1, 12, 25, true));
-				master.add(new QuillVillagerManager.DiamondForEmeralds(Items.DIAMOND_SHOVEL, 12, 1, 12, 25, true));
-				master.add(new QuillVillagerManager.DiamondForEmeralds(Items.DIAMOND_PICKAXE, 12, 2, 12, 25, true));
-			}
-			middle.add(new QuillVillagerManager.ItemsForEmeralds(Items.BELL, 36, 12, 15, 1));
-			master.add(new QuillVillagerManager.EmeraldForItems(Items.IRON_BLOCK, 1, 16, 25, 4));
-			master.add(new QuillVillagerManager.EmeraldForItems(Items.DIAMOND_BLOCK, 1, 16, 25, 42));
-			event.getTrades().put(1, basic);
-			event.getTrades().put(2, second);
-			event.getTrades().put(3, middle);
-			event.getTrades().put(4, expert);
 			event.getTrades().put(5, master);
 		}
 	}
 
 	@SubscribeEvent
 	public static void onTick(LivingEvent.LivingTickEvent event) {
-		if (event.getEntity() instanceof Villager target) {
+		if (event.getEntity() instanceof Villager target && QuillConfig.RIDER.get()) {
 			Player player = target.level().getNearestPlayer(target, 2);
 			if (player != null && player.isPassenger()) {
 				Entity mount = player.getVehicle();
@@ -272,7 +275,7 @@ public class QuillEvents {
 
 	@SubscribeEvent
 	public static void onEntitySpawned(EntityJoinLevelEvent event) {
-		if (event.getEntity() != null) {
+		if (QuillConfig.OCEAN.get()) {
 			Entity entity = event.getEntity();
 			LevelAccessor world = entity.level();
 			double x = entity.getX();
@@ -289,7 +292,7 @@ public class QuillEvents {
 	@SubscribeEvent
 	public static void onRightClickEntity(PlayerInteractEvent.EntityInteract event) {
 		Player player = event.getEntity();
-		if (event.getTarget() instanceof Villager target) {
+		if (event.getTarget() instanceof Villager target && QuillConfig.RIDER.get()) {
 			if (target.isPassenger() && player.isCrouching()) {
 				target.stopRiding();
 				player.swing(InteractionHand.MAIN_HAND);
@@ -300,20 +303,20 @@ public class QuillEvents {
 	@SubscribeEvent
 	public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
 		Player player = event.getEntity();
+		LevelAccessor world = event.getLevel();
 		ItemStack weapon = event.getItemStack();
 		BlockPos pos = event.getPos();
-		BlockState state = event.getLevel().getBlockState(pos);
-		LevelAccessor world = event.getLevel();
+		BlockState state = world.getBlockState(pos);
 		double x = (pos.getX() + 0.5);
 		double y = (pos.getY() + 0.5);
 		double z = (pos.getZ() + 0.5);
 		int f = weapon.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE);
-		if (weapon.getItem() instanceof AxeItem) {
+		if (weapon.getItem() instanceof AxeItem && QuillConfig.AXER.get()) {
 			ItemStack off = player.getOffhandItem();
 			if (state.is(BlockTags.LOGS) && !(off.isEmpty() || off == weapon)) {
 				event.setCanceled(true);
 			}
-		} else if (weapon.getItem() instanceof HoeItem) {
+		} else if (weapon.getItem() instanceof HoeItem && QuillConfig.FARMER.get()) {
 			Block target = state.getBlock();
 			if (target instanceof CropBlock crops && crops.isMaxAge(state)) {
 				player.swing(event.getHand());
@@ -392,4 +395,4 @@ public class QuillEvents {
 		}
 		return false;
 	}
-}
+}

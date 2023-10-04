@@ -1,5 +1,6 @@
 package net.salju.quill.mixins;
 
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Mixin;
 import net.salju.quill.init.QuillVillagers;
 
@@ -24,7 +25,7 @@ import java.util.List;
 
 @Mixin(targets = {"net.minecraft.world.entity.npc.VillagerTrades$EnchantBookForEmeralds"})
 public class VillagerEnchantedBookMixin implements VillagerTrades.ItemListing {
-	@Override
+	@Overwrite
 	public MerchantOffer getOffer(Entity entity, RandomSource rng) {
 		List<Enchantment> van = BuiltInRegistries.ENCHANTMENT.stream().filter(Enchantment::isTradeable).collect(Collectors.toList());
 		Enchantment ench = van.get(rng.nextInt(van.size()));

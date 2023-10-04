@@ -6,6 +6,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.Mixin;
 
 import net.salju.quill.init.QuillModSounds;
+import net.salju.quill.init.QuillConfig;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.api.distmarker.Dist;
 
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.Explosion;
@@ -30,30 +33,42 @@ public class CreeperMixin {
 
 	@Inject(method = "explodeCreeper", at = @At(value = "INVOKE"), cancellable = true)
 	private void boom(CallbackInfo ci) {
-		Creeper creeper = (Creeper) (Object) this;
+		if (QuillConfig.CREEPER.get()) {
+			Creeper creeper = (Creeper) (Object) this;
+			double x = creeper.getX();
+			double y = creeper.getY();
+			double z = creeper.getZ();
+			boolean powered = creeper.isPowered();
+			Level world = creeper.level();
+			check++;
+			if (check <= 1) {
+				world.playLocalSound(x, y, z, SoundEvents.FIREWORK_ROCKET_TWINKLE, SoundSource.HOSTILE, 1.0F, 1.0F, false);
+				if (powered || (Math.random() <= 0.12)) {
+					world.playLocalSound(x, y, z, QuillModSounds.CHEERS.get(), SoundSource.HOSTILE, 2.0F, 1.0F, false);
+				}
+				if (world.isClientSide()) {
+					creeperFireworks(creeper);
+				}
+			}
+			if (check >= 2) {
+				float f = powered ? 2.0F : 1.0F;
+				Explosion demoman = new Explosion(world, creeper, x, y, z, 3.0F * f, false, Explosion.BlockInteraction.KEEP);
+				demoman.explode();
+				creeper.discard();
+			}
+			ci.cancel();
+		}
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	private void creeperFireworks(Creeper creeper) {
 		double x = creeper.getX();
 		double y = creeper.getY();
 		double z = creeper.getZ();
-		boolean powered = creeper.isPowered();
-		Level world = creeper.level();
-		check++;
-		if (check <= 1) {
-			world.playLocalSound(x, y, z, SoundEvents.FIREWORK_ROCKET_TWINKLE, SoundSource.HOSTILE, 1.0F, 1.0F, false);
-			if (powered || (Math.random() <= 0.12)) {
-				world.playLocalSound(x, y, z, QuillModSounds.CHEERS.get(), SoundSource.HOSTILE, 2.0F, 1.0F, false);
-			}
-			if (world instanceof ClientLevel lvl) {
-				ParticleEngine eng = Minecraft.getInstance().particleEngine;
-				eng.add(new FireworkParticles.Starter(lvl, x, y + 0.5F, z, 0, 0, 0, eng, getPride(creeper)));
-			}
+		if (creeper.level() instanceof ClientLevel lvl) {
+			ParticleEngine eng = Minecraft.getInstance().particleEngine;
+			eng.add(new FireworkParticles.Starter(lvl, x, y + 0.5F, z, 0, 0, 0, eng, getPride(creeper)));
 		}
-		if (check >= 2) {
-			float f = powered ? 2.0F : 1.0F;
-			Explosion demoman = new Explosion(world, creeper, x, y, z, 3.0F * f, false, Explosion.BlockInteraction.KEEP);
-			demoman.explode();
-			creeper.discard();
-		}
-		ci.cancel();
 	}
 
 	private CompoundTag getPride(Creeper creeper) {
