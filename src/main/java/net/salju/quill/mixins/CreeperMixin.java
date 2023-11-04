@@ -3,11 +3,14 @@ package net.salju.quill.mixins;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Mixin;
 
 import net.salju.quill.init.QuillModSounds;
 import net.salju.quill.init.QuillConfig;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.salju.quill.QuillMod;
+
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.api.distmarker.Dist;
 
 import net.minecraft.world.level.Level;
@@ -28,9 +31,7 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 @Mixin(Creeper.class)
-public class CreeperMixin {
-	private int check;
-
+public abstract class CreeperMixin {
 	@Inject(method = "explodeCreeper", at = @At(value = "INVOKE"), cancellable = true)
 	private void boom(CallbackInfo ci) {
 		if (QuillConfig.CREEPER.get()) {
@@ -40,38 +41,36 @@ public class CreeperMixin {
 			double z = creeper.getZ();
 			boolean powered = creeper.isPowered();
 			Level world = creeper.level();
-			check++;
-			if (check <= 1) {
-				world.playLocalSound(x, y, z, SoundEvents.FIREWORK_ROCKET_TWINKLE, SoundSource.HOSTILE, 1.0F, 1.0F, false);
-				if (powered || (Math.random() <= 0.12)) {
-					world.playLocalSound(x, y, z, QuillModSounds.CHEERS.get(), SoundSource.HOSTILE, 2.0F, 1.0F, false);
-				}
-				if (world.isClientSide()) {
-					creeperFireworks(creeper);
-				}
+			world.playLocalSound(x, y, z, SoundEvents.FIREWORK_ROCKET_TWINKLE, SoundSource.HOSTILE, 1.0F, 1.0F, false);
+			if (powered || (Math.random() <= 0.12)) {
+				world.playLocalSound(x, y, z, QuillModSounds.CHEERS.get(), SoundSource.HOSTILE, 2.0F, 1.0F, false);
 			}
-			if (check >= 2) {
+			if (world.isClientSide()) {
+				creeperFireworks(world, x, y, z);
+			}
+			QuillMod.queueServerWork(2, () -> {
 				float f = powered ? 2.0F : 1.0F;
 				Explosion demoman = new Explosion(world, creeper, x, y, z, 3.0F * f, false, Explosion.BlockInteraction.KEEP);
 				demoman.explode();
 				creeper.discard();
-			}
+				spawnLingeringCloud();
+			});
 			ci.cancel();
 		}
 	}
 
+	@Shadow
+	abstract void spawnLingeringCloud();
+
 	@OnlyIn(Dist.CLIENT)
-	private void creeperFireworks(Creeper creeper) {
-		double x = creeper.getX();
-		double y = creeper.getY();
-		double z = creeper.getZ();
-		if (creeper.level() instanceof ClientLevel lvl) {
+	private void creeperFireworks(Level world, double x, double y, double z) {
+		if (world instanceof ClientLevel lvl) {
 			ParticleEngine eng = Minecraft.getInstance().particleEngine;
-			eng.add(new FireworkParticles.Starter(lvl, x, y + 0.5F, z, 0, 0, 0, eng, getPride(creeper)));
+			eng.add(new FireworkParticles.Starter(lvl, x, y + 0.5F, z, 0, 0, 0, eng, getPride()));
 		}
 	}
 
-	private CompoundTag getPride(Creeper creeper) {
+	private CompoundTag getPride() {
 		int i = Mth.nextInt(RandomSource.create(), 0, 10);
 		CompoundTag mainTag = new CompoundTag();
 		CompoundTag finalTag = new CompoundTag();

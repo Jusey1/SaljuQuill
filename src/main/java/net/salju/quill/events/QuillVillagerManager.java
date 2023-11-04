@@ -206,7 +206,7 @@ public class QuillVillagerManager {
 				} else if (type == VillagerType.SWAMP) {
 					ench = Enchantments.MENDING;
 				} else if (type == QuillVillagers.OCEAN.get()) {
-					ench = QuillEnchantments.AIRSTRIKE.get();
+					ench = Enchantments.CHANNELING;
 				}
 			}
 			int i = (ench.getMaxLevel() > 1 ? (ench.getMaxLevel() - 1) : 1);

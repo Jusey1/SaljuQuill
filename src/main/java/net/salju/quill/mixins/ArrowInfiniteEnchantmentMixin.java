@@ -13,7 +13,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 @Mixin(ArrowInfiniteEnchantment.class)
 public class ArrowInfiniteEnchantmentMixin extends Enchantment {
 	public ArrowInfiniteEnchantmentMixin(Enchantment.Rarity rare, EquipmentSlot... slots) {
-		super(rare, EnchantmentCategory.WEAPON, slots);
+		super(rare, EnchantmentCategory.BOW, slots);
 	}
 
 	@Override

@@ -10,7 +10,6 @@ import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.CriticalHitEvent;
-import net.minecraftforge.event.entity.living.ShieldBlockEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingGetProjectileEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -49,9 +48,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.CombatRules;
 import net.minecraft.world.SimpleContainer;
@@ -142,21 +138,6 @@ public class QuillEvents {
 					}
 					pickaxe = 0;
 					critical = false;
-				}
-			}
-		}
-	}
-
-	@SubscribeEvent
-	public static void onBlock(ShieldBlockEvent event) {
-		if (QuillConfig.SHIELD.get()) {
-			LivingEntity target = event.getEntity();
-			DamageSource source = event.getDamageSource();
-			if (source.is(DamageTypes.EXPLOSION) || source.is(DamageTypes.PLAYER_EXPLOSION)) {
-				target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 200, 0));
-				target.stopUsingItem();
-				if (target instanceof Player player) {
-					player.getCooldowns().addCooldown(target.getUseItem().getItem(), 200);
 				}
 			}
 		}
@@ -292,7 +273,7 @@ public class QuillEvents {
 	@SubscribeEvent
 	public static void onRightClickEntity(PlayerInteractEvent.EntityInteract event) {
 		Player player = event.getEntity();
-		if (event.getTarget() instanceof Villager target && QuillConfig.RIDER.get()) {
+		if (event.getTarget() instanceof LivingEntity target && QuillConfig.RIDER.get()) {
 			if (target.isPassenger() && player.isCrouching()) {
 				target.stopRiding();
 				player.swing(InteractionHand.MAIN_HAND);
@@ -395,4 +376,4 @@ public class QuillEvents {
 		}
 		return false;
 	}
-}
+}

@@ -1,6 +1,5 @@
 package net.salju.quill.mixins;
 
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Mixin;
 import net.salju.quill.init.QuillVillagers;
 
@@ -25,11 +24,11 @@ import java.util.List;
 
 @Mixin(targets = {"net.minecraft.world.entity.npc.VillagerTrades$EnchantBookForEmeralds"})
 public class VillagerEnchantedBookMixin implements VillagerTrades.ItemListing {
-	@Overwrite
+	@Override
 	public MerchantOffer getOffer(Entity entity, RandomSource rng) {
 		List<Enchantment> van = BuiltInRegistries.ENCHANTMENT.stream().filter(Enchantment::isTradeable).collect(Collectors.toList());
 		Enchantment ench = van.get(rng.nextInt(van.size()));
-		int e = Mth.nextInt(rng, 0, 3);
+		int e = Mth.nextInt(rng, 0, 2);
 		if (entity instanceof Villager target) {
 			VillagerType type = target.getVillagerData().getType();
 			if (type == VillagerType.PLAINS) {
@@ -70,9 +69,8 @@ public class VillagerEnchantedBookMixin implements VillagerTrades.ItemListing {
 	private List<Enchantment> getPlains() {
 		List<Enchantment> magic = Lists.newArrayList();
 		magic.add(Enchantments.UNBREAKING);
+		magic.add(Enchantments.KNOCKBACK);
 		magic.add(Enchantments.BLOCK_FORTUNE);
-		magic.add(Enchantments.FISHING_SPEED);
-		magic.add(Enchantments.FISHING_LUCK);
 		return magic;
 	}
 
@@ -80,7 +78,6 @@ public class VillagerEnchantedBookMixin implements VillagerTrades.ItemListing {
 		List<Enchantment> magic = Lists.newArrayList();
 		magic.add(Enchantments.THORNS);
 		magic.add(Enchantments.FIRE_ASPECT);
-		magic.add(Enchantments.FIRE_PROTECTION);
 		magic.add(Enchantments.FLAMING_ARROWS);
 		return magic;
 	}
@@ -89,35 +86,31 @@ public class VillagerEnchantedBookMixin implements VillagerTrades.ItemListing {
 		List<Enchantment> magic = Lists.newArrayList();
 		magic.add(Enchantments.MULTISHOT);
 		magic.add(Enchantments.QUICK_CHARGE);
-		magic.add(Enchantments.PROJECTILE_PROTECTION);
 		magic.add(Enchantments.PIERCING);
 		return magic;
 	}
 
 	private List<Enchantment> getTaiga() {
 		List<Enchantment> magic = Lists.newArrayList();
-		magic.add(Enchantments.KNOCKBACK);
+		magic.add(Enchantments.MOB_LOOTING);
 		magic.add(Enchantments.SMITE);
 		magic.add(Enchantments.BLAST_PROTECTION);
-		magic.add(Enchantments.MOB_LOOTING);
 		return magic;
 	}
 
 	private List<Enchantment> getSnow() {
 		List<Enchantment> magic = Lists.newArrayList();
-		magic.add(Enchantments.FALL_PROTECTION);
 		magic.add(Enchantments.FROST_WALKER);
-		magic.add(Enchantments.PUNCH_ARROWS);
+		magic.add(Enchantments.SWEEPING_EDGE);
 		magic.add(Enchantments.BANE_OF_ARTHROPODS);
 		return magic;
 	}
 
 	private List<Enchantment> getJungle() {
 		List<Enchantment> magic = Lists.newArrayList();
-		magic.add(Enchantments.VANISHING_CURSE);
 		magic.add(Enchantments.INFINITY_ARROWS);
 		magic.add(Enchantments.POWER_ARROWS);
-		magic.add(Enchantments.SWEEPING_EDGE);
+		magic.add(Enchantments.PUNCH_ARROWS);
 		return magic;
 	}
 
@@ -126,16 +119,14 @@ public class VillagerEnchantedBookMixin implements VillagerTrades.ItemListing {
 		magic.add(Enchantments.DEPTH_STRIDER);
 		magic.add(Enchantments.RESPIRATION);
 		magic.add(Enchantments.AQUA_AFFINITY);
-		magic.add(Enchantments.BINDING_CURSE);
 		return magic;
 	}
 
 	private List<Enchantment> getOcean() {
 		List<Enchantment> magic = Lists.newArrayList();
-		magic.add(Enchantments.CHANNELING);
+		magic.add(Enchantments.IMPALING);
 		magic.add(Enchantments.RIPTIDE);
 		magic.add(Enchantments.LOYALTY);
-		magic.add(Enchantments.IMPALING);
 		return magic;
 	}
 }

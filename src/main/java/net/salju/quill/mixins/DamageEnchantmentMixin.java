@@ -1,6 +1,5 @@
 package net.salju.quill.mixins;
 
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Mixin;
 
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
@@ -17,12 +16,12 @@ public class DamageEnchantmentMixin extends Enchantment {
 		super(rare, EnchantmentCategory.WEAPON, slots);
 	}
 
-	@Overwrite
+	@Override
 	public boolean checkCompatibility(Enchantment ench) {
 		return !(ench instanceof DamageEnchantment || ench instanceof DiggingEnchantment);
 	}
 
-	@Overwrite
+	@Override
 	public boolean canEnchant(ItemStack stack) {
 		return stack.getItem() instanceof DiggerItem ? true : super.canEnchant(stack);
 	}

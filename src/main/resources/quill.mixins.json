@@ -7,7 +7,6 @@
      "CrossbowItemMixin",
      "DiggerItemMixin",
      "SwordItemMixin",
-     "TridentItemMixin",
      "HorseArmorItemMixin",
      "EnchantmentHelperMixin",
      "DamageEnchantmentMixin",

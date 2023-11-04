@@ -1,6 +1,5 @@
 package net.salju.quill.mixins;
 
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Mixin;
 
 import net.minecraft.world.level.block.state.BlockState;
@@ -27,7 +26,7 @@ public class DiggerItemMixin extends TieredItem implements Vanishable {
 		return !player.isCreative();
 	}
 
-	@Overwrite
+	@Override
 	public boolean hurtEnemy(ItemStack axe, LivingEntity target, LivingEntity attacker) {
 		axe.hurtAndBreak(1, attacker, (user) -> user.broadcastBreakEvent(EquipmentSlot.MAINHAND));
 		return true;

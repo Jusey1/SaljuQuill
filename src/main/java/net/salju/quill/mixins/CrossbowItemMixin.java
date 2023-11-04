@@ -9,19 +9,13 @@ import net.salju.quill.init.QuillEnchantments;
 
 import net.minecraft.world.level.Level;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.LivingEntity;
 
 @Mixin(CrossbowItem.class)
-public abstract class CrossbowItemMixin extends ProjectileWeaponItem {
-	public CrossbowItemMixin(Item.Properties props) {
-		super(props);
-	}
-
+public abstract class CrossbowItemMixin {
 	@Inject(method = "getArrow", at = @At("RETURN"), cancellable = true)
 	private static void onGetArrow(Level level, LivingEntity shooter, ItemStack crossbow, ItemStack ammo, CallbackInfoReturnable<AbstractArrow> info) {
 		AbstractArrow arrow = info.getReturnValue();

@@ -13,5 +13,4 @@ public class QuillEnchantments {
 	public static final DeferredRegister<Enchantment> REGISTRY = DeferredRegister.create(ForgeRegistries.ENCHANTMENTS, QuillMod.MODID);
 	public static final RegistryObject<Enchantment> AUTO_SMELT = REGISTRY.register("auto_smelt", () -> new AutoSmelt());
 	public static final RegistryObject<Enchantment> SHARPSHOOTER = REGISTRY.register("sharpshooter", () -> new Sharpshooter());
-	public static final RegistryObject<Enchantment> AIRSTRIKE = REGISTRY.register("airstrike", () -> new Airstrike());
 }
