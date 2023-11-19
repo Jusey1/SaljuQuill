@@ -34,7 +34,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.BowItem;
-import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.player.Player;
@@ -55,7 +54,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Mth;
 import net.minecraft.tags.DamageTypeTags;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.sounds.SoundEvents;
@@ -225,8 +223,6 @@ public class QuillEvents {
 					master.add(new QuillVillagerManager.DiamondForEmeralds(Items.DIAMOND_PICKAXE, 12, 2, 12, 25, true));
 				}
 				middle.add(new QuillVillagerManager.ItemsForEmeralds(Items.BELL, 36, 12, 15, 1));
-				master.add(new QuillVillagerManager.EmeraldForItems(Items.IRON_BLOCK, 1, 16, 25, 4));
-				master.add(new QuillVillagerManager.EmeraldForItems(Items.DIAMOND_BLOCK, 1, 16, 25, 42));
 				event.getTrades().put(1, basic);
 				event.getTrades().put(2, second);
 				event.getTrades().put(3, middle);
@@ -292,12 +288,7 @@ public class QuillEvents {
 		double y = (pos.getY() + 0.5);
 		double z = (pos.getZ() + 0.5);
 		int f = weapon.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE);
-		if (weapon.getItem() instanceof AxeItem && QuillConfig.AXER.get()) {
-			ItemStack off = player.getOffhandItem();
-			if (state.is(BlockTags.LOGS) && !(off.isEmpty() || off == weapon)) {
-				event.setCanceled(true);
-			}
-		} else if (weapon.getItem() instanceof HoeItem && QuillConfig.FARMER.get()) {
+		if (weapon.getItem() instanceof HoeItem && QuillConfig.FARMER.get()) {
 			Block target = state.getBlock();
 			if (target instanceof CropBlock crops && crops.isMaxAge(state)) {
 				player.swing(event.getHand());
@@ -376,4 +367,4 @@ public class QuillEvents {
 		}
 		return false;
 	}
-}
+}

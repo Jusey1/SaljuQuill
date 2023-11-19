@@ -8,14 +8,16 @@ import org.spongepowered.asm.mixin.Mixin;
 
 import net.salju.quill.init.QuillModSounds;
 import net.salju.quill.init.QuillConfig;
-import net.salju.quill.QuillMod;
 
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.api.distmarker.Dist;
 
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.Explosion;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Mth;
 import net.minecraft.sounds.SoundSource;
@@ -31,7 +33,18 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 @Mixin(Creeper.class)
-public abstract class CreeperMixin {
+public abstract class CreeperMixin extends Monster {
+	private int check = 0;
+
+	public CreeperMixin(EntityType<? extends Creeper> type, Level world) {
+		super(type, world);
+	}
+
+	@Override
+	public boolean causeFallDamage(float f1, float f2, DamageSource source) {
+		return super.causeFallDamage(f1, f2, source);
+	}
+
 	@Inject(method = "explodeCreeper", at = @At(value = "INVOKE"), cancellable = true)
 	private void boom(CallbackInfo ci) {
 		if (QuillConfig.CREEPER.get()) {
@@ -41,20 +54,22 @@ public abstract class CreeperMixin {
 			double z = creeper.getZ();
 			boolean powered = creeper.isPowered();
 			Level world = creeper.level();
-			world.playLocalSound(x, y, z, SoundEvents.FIREWORK_ROCKET_TWINKLE, SoundSource.HOSTILE, 1.0F, 1.0F, false);
-			if (powered || (Math.random() <= 0.12)) {
-				world.playLocalSound(x, y, z, QuillModSounds.CHEERS.get(), SoundSource.HOSTILE, 2.0F, 1.0F, false);
-			}
-			if (world.isClientSide()) {
-				creeperFireworks(world, x, y, z);
-			}
-			QuillMod.queueServerWork(2, () -> {
+			if (check == 0) {
+				world.playLocalSound(x, y, z, SoundEvents.FIREWORK_ROCKET_TWINKLE, SoundSource.HOSTILE, 1.0F, 1.0F, false);
+				if (powered || (Math.random() <= 0.12)) {
+					world.playLocalSound(x, y, z, QuillModSounds.CHEERS.get(), SoundSource.HOSTILE, 2.0F, 1.0F, false);
+				}
+				if (world.isClientSide()) {
+					creeperFireworks(world, x, y, z);
+				}
+			} else if (check >= 1) {
 				float f = powered ? 2.0F : 1.0F;
 				Explosion demoman = new Explosion(world, creeper, x, y, z, 3.0F * f, false, Explosion.BlockInteraction.KEEP);
 				demoman.explode();
 				creeper.discard();
 				spawnLingeringCloud();
-			});
+			}
+			check = (check + 1);
 			ci.cancel();
 		}
 	}
@@ -139,4 +154,4 @@ public abstract class CreeperMixin {
 		finalTag.put("Explosions", nbt);
 		return finalTag;
 	}
-}
+}

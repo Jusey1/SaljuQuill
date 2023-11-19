@@ -12,7 +12,6 @@ public class QuillConfig {
 	public static final ForgeConfigSpec.BooleanValue RIDER;
 
 	public static final ForgeConfigSpec.BooleanValue FARMER;
-	public static final ForgeConfigSpec.BooleanValue AXER;
 	public static final ForgeConfigSpec.BooleanValue PICKMAN;
 	public static final ForgeConfigSpec.BooleanValue SWORD;
 	public static final ForgeConfigSpec.BooleanValue USER;
@@ -23,9 +22,8 @@ public class QuillConfig {
 		CREEPER = BUILDER.comment("Should creepers be prideful?").define("Prideful Creepers", true);
 		TRADES = BUILDER.comment("Should updated villager trades be enabled?").define("Villager Trades", true);
 		OCEAN = BUILDER.comment("Should ocean villagers be enabled?").define("Pirate Villagers", true);
-		RIDER = BUILDER.comment("Should this mod's villager rider changes be implemented?").define("Villager Riders", true);
+		RIDER = BUILDER.comment("Should this mod's entity rider changes be implemented?").define("Riders", true);
 		FARMER = BUILDER.comment("Should hoes have the ability to harvest crops?").define("Crops Harvest", true);
-		AXER = BUILDER.comment("Should axes be unable to strip logs under the right conditions?").define("Axster", true);
 		PICKMAN = BUILDER.comment("Should pickaxes have better critical hits?").define("Pickman", true);
 		SWORD = BUILDER.comment("Should swords have the parry ability?").define("Parrying", true);
 		USER = BUILDER.comment("Should basic items get a cooldown during use after being hit by an enemy?").define("User", true);
