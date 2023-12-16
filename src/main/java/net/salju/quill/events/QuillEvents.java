@@ -17,7 +17,6 @@ import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.common.Tags;
 
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.Blocks;
@@ -53,7 +52,6 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Mth;
-import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.sounds.SoundEvents;
@@ -88,8 +86,8 @@ public class QuillEvents {
 				}
 				if (target.isUsingItem()) {
 					ItemStack stack = target.getUseItem();
-					if (stack.getItem() instanceof SwordItem sword && isSwordBlocked(event.getSource(), target)) {
-						float d = ((sword.getDamage() - 2.0F) + (EnchantmentHelper.getDamageBonus(stack, attacker.getMobType()) * 0.5F) + stack.getEnchantmentLevel(Enchantments.SWEEPING_EDGE));
+					if (stack.getItem() instanceof SwordItem sword && QuillManager.isSwordBlocked(event.getSource(), target)) {
+						float d = (((float) target.getAttribute(Attributes.ATTACK_DAMAGE).getValue() - 2.0F) + EnchantmentHelper.getDamageBonus(stack, attacker.getMobType()));
 						event.setAmount(damage * 0.75F);
 						target.swing(target.getUsedItemHand());
 						if (target instanceof Player player) {
@@ -351,20 +349,5 @@ public class QuillEvents {
 				}
 			}
 		}
-	}
-
-	private static boolean isSwordBlocked(DamageSource source, LivingEntity target) {
-		if (!source.is(DamageTypeTags.BYPASSES_SHIELD)) {
-			Vec3 vec32 = source.getSourcePosition();
-			if (vec32 != null) {
-				Vec3 vec3 = target.getViewVector(1.0F);
-				Vec3 vec31 = vec32.vectorTo(target.position()).normalize();
-				vec31 = new Vec3(vec31.x, 0.0D, vec31.z);
-				if (vec31.dot(vec3) < 0.0D) {
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 }

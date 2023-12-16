@@ -11,8 +11,8 @@
      "EnchantmentHelperMixin",
      "DamageEnchantmentMixin",
      "ArrowInfiniteEnchantmentMixin",
-     "CreeperMixin",
-     "VillagerEnchantedBookMixin"
+     "VillagerEnchantedBookMixin",
+     "CreeperMixin"
   ],
   "client": [
      "ItemInHandRendererMixin"
