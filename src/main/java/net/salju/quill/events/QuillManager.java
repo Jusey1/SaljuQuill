@@ -1,12 +1,10 @@
 package net.salju.quill.events;
 
-import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.damagesource.DamageSource;
+import net.minecraftforge.fml.LogicalSide;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Mth;
-import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.client.particle.ParticleEngine;
@@ -14,23 +12,18 @@ import net.minecraft.client.particle.FireworkParticles;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.Minecraft;
 
-import java.util.List;
-import com.google.common.collect.Lists;
+import javax.annotation.Nullable;
+import java.util.List;
+import com.google.common.collect.Lists;
 
 public class QuillManager {
-	public static boolean isSwordBlocked(DamageSource source, LivingEntity target) {
-		if (!source.is(DamageTypeTags.BYPASSES_SHIELD)) {
-			Vec3 vec32 = source.getSourcePosition();
-			if (vec32 != null) {
-				Vec3 vec3 = target.getViewVector(1.0F);
-				Vec3 vec31 = vec32.vectorTo(target.position()).normalize();
-				vec31 = new Vec3(vec31.x, 0.0D, vec31.z);
-				if (vec31.dot(vec3) < 0.0D) {
-					return true;
-				}
-			}
+	@Nullable
+	public static Player getPlayer(LogicalSide side) {
+		if (side.isClient()) {
+			return Minecraft.getInstance().player;
+		} else {
+			return null;
 		}
-		return false;
 	}
 
 	public static void creeperFireworks(Level world, double x, double y, double z) {

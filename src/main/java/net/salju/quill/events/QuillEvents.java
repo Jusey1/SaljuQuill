@@ -17,6 +17,7 @@ import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.common.Tags;
 
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.Blocks;
@@ -52,6 +53,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Mth;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.sounds.SoundEvents;
@@ -86,10 +88,10 @@ public class QuillEvents {
 				}
 				if (target.isUsingItem()) {
 					ItemStack stack = target.getUseItem();
-					if (stack.getItem() instanceof SwordItem sword && QuillManager.isSwordBlocked(event.getSource(), target)) {
-						float d = (((float) target.getAttribute(Attributes.ATTACK_DAMAGE).getValue() - 2.0F) + EnchantmentHelper.getDamageBonus(stack, attacker.getMobType()));
+					if (stack.getItem() instanceof SwordItem && isSwordBlocked(event.getSource(), target)) {
+						float d = (((float) target.getAttributeValue(Attributes.ATTACK_DAMAGE) - 2.0F) + EnchantmentHelper.getDamageBonus(stack, attacker.getMobType()));
 						event.setAmount(damage * 0.75F);
-						target.swing(target.getUsedItemHand());
+						target.swing(target.getUsedItemHand(), true);
 						if (target instanceof Player player) {
 							attacker.hurt(player.damageSources().playerAttack(player), d);
 							if (player.level() instanceof ServerLevel lvl && d > 2.0F) {
@@ -99,7 +101,7 @@ public class QuillEvents {
 						} else {
 							attacker.hurt(target.damageSources().mobAttack(target), d);
 						}
-						sword.hurtEnemy(stack, attacker, target);
+						stack.getItem().hurtEnemy(stack, attacker, target);
 					}
 					if (stack.getUseDuration() <= 64 && QuillConfig.USER.get()) {
 						target.stopUsingItem();
@@ -257,9 +259,8 @@ public class QuillEvents {
 			double y = entity.getY();
 			double z = entity.getZ();
 			BlockPos pos = BlockPos.containing(x, y, z);
-			if (entity instanceof Villager target && world.getBiome(pos).is(BiomeTags.IS_OCEAN) && target.getVillagerData().getProfession() == VillagerProfession.NONE && target.getVillagerData().getType() != QuillVillagers.OCEAN.get()) {
-				VillagerData data = new VillagerData(QuillVillagers.OCEAN.get(), VillagerProfession.NONE, 1);
-				target.setVillagerData(data);
+			if (entity instanceof Villager target && world.getBiome(pos).is(BiomeTags.IS_OCEAN) && !event.loadedFromDisk()) {
+				target.setVillagerData(new VillagerData(QuillVillagers.OCEAN.get(), VillagerProfession.NONE, 1));
 			}
 		}
 	}
@@ -349,5 +350,20 @@ public class QuillEvents {
 				}
 			}
 		}
+	}
+
+	private static boolean isSwordBlocked(DamageSource source, LivingEntity target) {
+		if (!source.is(DamageTypeTags.BYPASSES_SHIELD)) {
+			Vec3 vec32 = source.getSourcePosition();
+			if (vec32 != null) {
+				Vec3 vec3 = target.getViewVector(1.0F);
+				Vec3 vec31 = vec32.vectorTo(target.position()).normalize();
+				vec31 = new Vec3(vec31.x, 0.0D, vec31.z);
+				if (vec31.dot(vec3) < 0.0D) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }

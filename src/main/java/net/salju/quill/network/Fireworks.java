@@ -2,11 +2,8 @@
 
 import net.salju.quill.events.QuillManager;
 import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.fml.LogicalSide;
-
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.client.Minecraft;
 import java.util.function.Supplier;
 
 public class Fireworks {
@@ -32,11 +29,10 @@ public class Fireworks {
 
 	public static void handler(Fireworks message, Supplier<NetworkEvent.Context> context) {
 		context.get().enqueueWork(() -> {
-			Player player = context.get().getSender();
-			if (context.get().getDirection().getReceptionSide() == LogicalSide.CLIENT) {
-				player = Minecraft.getInstance().player;
+			Player player = QuillManager.getPlayer(context.get().getDirection().getReceptionSide());
+			if (player != null) {
+				QuillManager.creeperFireworks(player.level(), getX, getY, getZ);
 			}
-			QuillManager.creeperFireworks(player.level(), getX, getY, getZ);
 		});
 		context.get().setPacketHandled(true);
 	}
