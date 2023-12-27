@@ -1,15 +1,13 @@
 package net.salju.quill.enchantment;
 
 import net.salju.quill.init.QuillEnchantments;
-
-import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.EquipmentSlot;
-
-import java.util.List;
+import java.util.List;
 
 public class AutoSmelt extends Enchantment {
 	public AutoSmelt(EquipmentSlot... slots) {

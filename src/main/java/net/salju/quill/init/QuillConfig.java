@@ -10,12 +10,13 @@ public class QuillConfig {
 	public static final ForgeConfigSpec.BooleanValue TRADES;
 	public static final ForgeConfigSpec.BooleanValue OCEAN;
 	public static final ForgeConfigSpec.BooleanValue RIDER;
-
 	public static final ForgeConfigSpec.BooleanValue FARMER;
 	public static final ForgeConfigSpec.BooleanValue PICKMAN;
 	public static final ForgeConfigSpec.BooleanValue SWORD;
 	public static final ForgeConfigSpec.BooleanValue USER;
 	public static final ForgeConfigSpec.BooleanValue CROSSBOW;
+	public static final ForgeConfigSpec.BooleanValue CAMPFIRE;
+	public static final ForgeConfigSpec.BooleanValue DEATH;
 	
 	static {
 		BUILDER.push("Features");
@@ -28,6 +29,8 @@ public class QuillConfig {
 		SWORD = BUILDER.comment("Should swords have the parry ability?").define("Parrying", true);
 		USER = BUILDER.comment("Should basic items get a cooldown during use after being hit by an enemy?").define("User", true);
 		CROSSBOW = BUILDER.comment("Should crossbows have infinity?").define("Ceaseless Crossbows", true);
+		CAMPFIRE = BUILDER.comment("Should campfires disable enemy spawning if lit?").define("Campfire Protection", true);
+		DEATH = BUILDER.comment("Should hotbar & equipment be kept on death?").define("Death Protection", true);
 		BUILDER.pop();
 		CONFIG = BUILDER.build();
 	}

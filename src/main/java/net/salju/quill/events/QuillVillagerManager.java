@@ -19,9 +19,7 @@ import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Mth;
-
-import java.util.List;
-import com.google.common.collect.Lists;
+import java.util.List;
 
 public class QuillVillagerManager {
 	static class EmeraldForItems implements VillagerTrades.ItemListing {
@@ -144,38 +142,26 @@ public class QuillVillagerManager {
 
 		@Override
 		public MerchantOffer getOffer(Entity entity, RandomSource rng) {
-			ItemStack stack = new ItemStack(Items.TRIDENT);
-			int j = Mth.nextInt(rng, 32, 42);
+			ItemStack stack = new ItemStack(Items.MANGROVE_BOAT);
+			int j = 1;
 			if (entity instanceof Villager target) {
 				VillagerType type = target.getVillagerData().getType();
-				if (type == QuillVillagers.OCEAN.get()) {
-					Enchantment ench = Enchantments.LOYALTY;
-					if (j > 37) {
-						ench = Enchantments.RIPTIDE;
-					}
-					stack.enchant(ench, 3);
-				} else {
-					List<Item> list = getBoats();
-					int e = Mth.nextInt(rng, 0, 8);
-					stack = new ItemStack(list.get(e));
-					j = 1;
+				if (type == VillagerType.PLAINS) {
+					stack = new ItemStack(Items.OAK_BOAT);
+				} else if (type == VillagerType.DESERT || type == VillagerType.JUNGLE) {
+					stack = new ItemStack(Items.JUNGLE_BOAT);
+				} else if (type == VillagerType.SAVANNA) {
+					stack = new ItemStack(Items.ACACIA_BOAT);
+				} else if (type == VillagerType.TAIGA || type == VillagerType.SNOW) {
+					stack = new ItemStack(Items.SPRUCE_BOAT);
+				} else if (type == VillagerType.SWAMP) {
+					stack = new ItemStack(Items.DARK_OAK_BOAT);
+				} else if (type == QuillVillagers.OCEAN.get()) {
+					stack = new ItemStack(Items.TRIDENT);
+					j = Mth.nextInt(rng, 32, 42);
 				}
 			}
 			return new MerchantOffer(new ItemStack(Items.EMERALD, j), stack, 4, this.xp, 0.2F);
-		}
-
-		private List<Item> getBoats() {
-			List<Item> boats = Lists.newArrayList();
-			boats.add(Items.ACACIA_BOAT);
-			boats.add(Items.BIRCH_BOAT);
-			boats.add(Items.DARK_OAK_BOAT);
-			boats.add(Items.OAK_BOAT);
-			boats.add(Items.SPRUCE_BOAT);
-			boats.add(Items.BAMBOO_RAFT);
-			boats.add(Items.CHERRY_BOAT);
-			boats.add(Items.JUNGLE_BOAT);
-			boats.add(Items.MANGROVE_BOAT);
-			return boats;
 		}
 	}
 
