@@ -1,7 +1,5 @@
 package net.salju.quill.block;
 
-import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.Block;
@@ -28,20 +26,21 @@ public class TraderBlock extends Block {
 	@Override
 	public void tick(BlockState block, ServerLevel lvl, BlockPos pos, RandomSource random) {
 		super.tick(block, lvl, pos, random);
-		if (Math.random() <= 0.12) {
+		if (lvl.getServer().getWorldData().overworldData().getWanderingTraderSpawnDelay() <= 2400) {
 			Player player = lvl.getNearestPlayer(pos.getX(), pos.getY(), pos.getZ(), 64, false);
-			if (player != null && lvl.getEntitiesOfClass(WanderingTrader.class, AABB.ofSize(new Vec3(pos.getX(), pos.getY(), pos.getZ()), 128, 128, 128)).isEmpty()) {
+			if (player != null) {
 				BlockPos spawnpos = this.findSpawnPositionNear(lvl, pos, 12, random);
 				if (spawnpos != null) {
 					WanderingTrader trader = EntityType.WANDERING_TRADER.spawn(lvl, spawnpos, MobSpawnType.EVENT);
 					if (trader != null) {
+						lvl.getServer().getWorldData().overworldData().setWanderingTraderSpawnDelay(24000);
 						for (int i = 0; i < 2; ++i) {
 							TraderLlama pet = EntityType.TRADER_LLAMA.spawn(lvl, spawnpos, MobSpawnType.EVENT);
 							if (pet != null) {
 								pet.setLeashedTo(trader, true);
 							}
 						}
-						trader.setDespawnDelay(24000);
+						trader.setDespawnDelay(18000);
 						trader.setWanderTarget(pos);
 						trader.restrictTo(pos, 16);
 						lvl.playSound(null, pos, SoundEvents.BELL_BLOCK, SoundSource.BLOCKS, 1.0F, 1.0F);
