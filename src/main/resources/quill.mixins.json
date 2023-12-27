@@ -12,6 +12,8 @@
      "DamageEnchantmentMixin",
      "ArrowInfiniteEnchantmentMixin",
      "VillagerEnchantedBookMixin",
+     "InventoryMixin",
+     "ServerPlayerMixin",
      "CreeperMixin"
   ],
   "client": [
