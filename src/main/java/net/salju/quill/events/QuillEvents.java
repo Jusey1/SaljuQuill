@@ -1,11 +1,13 @@
 package net.salju.quill.events;
 
 import net.salju.quill.init.QuillVillagers;
+import net.salju.quill.init.QuillTags;
 import net.salju.quill.init.QuillEnchantments;
 import net.salju.quill.init.QuillConfig;
 
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.event.level.BlockEvent;
@@ -59,8 +61,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.BlockPos;
-
-import java.util.Optional;
+import java.util.Optional;
 import java.util.List;
 
 @Mod.EventBusSubscriber
@@ -241,39 +242,55 @@ public class QuillEvents {
 	public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
 		Player player = event.getEntity();
 		LevelAccessor world = event.getLevel();
-		ItemStack weapon = event.getItemStack();
+		ItemStack stack = event.getItemStack();
 		BlockPos pos = event.getPos();
 		BlockState state = world.getBlockState(pos);
-		double x = (pos.getX() + 0.5);
-		double y = (pos.getY() + 0.5);
-		double z = (pos.getZ() + 0.5);
-		int f = weapon.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE);
-		if (weapon.getItem() instanceof HoeItem && QuillConfig.FARMER.get()) {
+		if (state.is(QuillTags.LB) && stack.is(QuillTags.LI) && state.getBlock().asItem() == stack.getItem()) {
+			if (world.isEmptyBlock(pos.below())) {
+				world.setBlock(pos.below(), state, 3);
+				world.playSound(player, pos.below(), state.getSoundType(world, pos.below(), player).getPlaceSound(), SoundSource.BLOCKS);
+				player.swing(event.getHand());
+				if (!player.isCreative()) {
+					stack.shrink(1);
+				}
+			} else if (world.isEmptyBlock(pos.above())) {
+				world.setBlock(pos.above(), state, 3);
+				world.playSound(player, pos.above(), state.getSoundType(world, pos.above(), player).getPlaceSound(), SoundSource.BLOCKS);
+				player.swing(event.getHand());
+				if (!player.isCreative()) {
+					stack.shrink(1);
+				}
+			}
+		} else if (stack.getItem() instanceof HoeItem && QuillConfig.FARMER.get()) {
 			Block target = state.getBlock();
 			if (target instanceof CropBlock crops && crops.isMaxAge(state)) {
 				player.swing(event.getHand());
 				if (world instanceof ServerLevel lvl) {
 					lvl.playSound(null, pos, SoundEvents.CROP_BREAK, SoundSource.BLOCKS, 1.0F, (float) (0.8F + (Math.random() * 0.2)));
-					weapon.hurtAndBreak(1, player, (user) -> user.broadcastBreakEvent(EquipmentSlot.MAINHAND));
-					List<ItemStack> drops = target.getDrops(state, lvl, pos, null, player, weapon);
+					stack.hurtAndBreak(1, player, (user) -> user.broadcastBreakEvent(EquipmentSlot.MAINHAND));
+					List<ItemStack> drops = target.getDrops(state, lvl, pos, null, player, stack);
 					ItemStack base = crops.getCloneItemStack(lvl, pos, state);
 					lvl.setBlock(pos, crops.getStateForAge(0), 2);
-					for (ItemStack stack : drops) {
-						if (stack.is(Tags.Items.CROPS)) {
-							lvl.addFreshEntity(new ItemEntity(lvl, x, y, z, stack));
+					double x = (pos.getX() + 0.5);
+					double y = (pos.getY() + 0.5);
+					double z = (pos.getZ() + 0.5);
+					int f = stack.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE);
+					for (ItemStack item : drops) {
+						if (item.is(Tags.Items.CROPS)) {
+							lvl.addFreshEntity(new ItemEntity(lvl, x, y, z, item));
 							if (!base.isEdible() && f > 0) {
 								if (Math.random() <= 0.56) {
 									int i = Mth.nextInt(RandomSource.create(), 0, f);
 									if (i > 0) {
-										stack.setCount(i);
-										lvl.addFreshEntity(new ItemEntity(lvl, x, y, z, stack));
+										item.setCount(i);
+										lvl.addFreshEntity(new ItemEntity(lvl, x, y, z, item));
 									}
 								}
 							}
-						} else if (stack.is(Tags.Items.SEEDS)) {
-							stack.setCount(1);
+						} else if (item.is(Tags.Items.SEEDS)) {
+							item.setCount(1);
 							if (Math.random() <= 0.45) {
-								lvl.addFreshEntity(new ItemEntity(lvl, x, y, z, stack));
+								lvl.addFreshEntity(new ItemEntity(lvl, x, y, z, item));
 							}
 						}
 					}
@@ -282,28 +299,36 @@ public class QuillEvents {
 		}
 	}
 
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	public static void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
+		BlockState state = event.getEntity().level().getBlockState(event.getPos());
+		if (!event.getEntity().isCreative() && !state.is(QuillTags.DND) && QuillConfig.DND.get()) {
+			event.setCanceled(true);
+		}
+	}
+
 	@SubscribeEvent
 	public static void onBlockBreak(BlockEvent.BreakEvent event) {
 		Player player = event.getPlayer();
-		ItemStack weapon = player.getMainHandItem();
+		ItemStack stack = player.getMainHandItem();
 		BlockPos pos = event.getPos();
 		BlockState state = event.getState();
 		LevelAccessor world = event.getLevel();
 		double x = (pos.getX() + 0.5);
 		double y = (pos.getY() + 0.5);
 		double z = (pos.getZ() + 0.5);
-		if (state.is(Tags.Blocks.ORES) && world instanceof ServerLevel lvl && weapon.getEnchantmentLevel(QuillEnchantments.AUTO_SMELT.get()) > 0) {
+		if (state.is(Tags.Blocks.ORES) && world instanceof ServerLevel lvl && stack.getEnchantmentLevel(QuillEnchantments.AUTO_SMELT.get()) > 0) {
 			Block target = state.getBlock();
-			List<ItemStack> drops = target.getDrops(state, lvl, pos, null, player, weapon);
-			for (ItemStack stack : drops) {
-				Optional<SmeltingRecipe> recipe = lvl.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(stack), lvl);
+			List<ItemStack> drops = target.getDrops(state, lvl, pos, null, player, stack);
+			for (ItemStack item : drops) {
+				Optional<SmeltingRecipe> recipe = lvl.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(item), lvl);
 				if (recipe.isPresent()) {
 					ItemStack smelt = recipe.get().getResultItem(lvl.registryAccess()).copy();
-					smelt.setCount(stack.getCount());
+					smelt.setCount(item.getCount());
 					lvl.addFreshEntity(new ItemEntity(lvl, x, y, z, smelt));
 					if (!event.isCanceled()) {
 						world.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
-						weapon.hurtAndBreak(1, player, (user) -> user.broadcastBreakEvent(EquipmentSlot.MAINHAND));
+						stack.hurtAndBreak(1, player, (user) -> user.broadcastBreakEvent(EquipmentSlot.MAINHAND));
 						lvl.sendParticles(ParticleTypes.FLAME, x, y, z, 4, 0.35, 0.35, 0.35, 0);
 						lvl.addFreshEntity(new ExperienceOrb(lvl, x, y, z, 2));
 						event.setCanceled(true);
@@ -312,4 +337,4 @@ public class QuillEvents {
 			}
 		}
 	}
-}
+}

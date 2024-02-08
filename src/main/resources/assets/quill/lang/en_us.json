@@ -3,8 +3,6 @@
   "enchantment.quill.auto_smelt.desc": "Automatically smelts mined ore blocks and sets entities on fire for a few seconds.",
   "subtitles.cheers": "*Cheers*",
   "enchantment.quill.auto_smelt": "Auto-Smelt",
-  "enchantment.quill.airstrike": "Airstrike",
-  "enchantment.quill.airstrike.desc": "Allows the trident to give boost during Elytra flight.",
   "enchantment.quill.sharpshooter": "Sharpshooter",
   "block.quill.trader_block": "Trader Block",
   "enchantment.quill.sharpshooter.desc": "Increases the damage of arrows shot by the Crossbow."

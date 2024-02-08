@@ -17,6 +17,7 @@ public class QuillConfig {
 	public static final ForgeConfigSpec.BooleanValue CROSSBOW;
 	public static final ForgeConfigSpec.BooleanValue CAMPFIRE;
 	public static final ForgeConfigSpec.BooleanValue DEATH;
+	public static final ForgeConfigSpec.BooleanValue DND;
 	
 	static {
 		BUILDER.push("Features");
@@ -31,6 +32,7 @@ public class QuillConfig {
 		CROSSBOW = BUILDER.comment("Should crossbows have infinity?").define("Ceaseless Crossbows", true);
 		CAMPFIRE = BUILDER.comment("Should campfires disable enemy spawning if lit?").define("Campfire Protection", true);
 		DEATH = BUILDER.comment("Should hotbar & equipment be kept on death?").define("Death Protection", true);
+		DND = BUILDER.comment("Should players be unable to break most blocks in survival mode?").define("Caves & Kobolds", false);
 		BUILDER.pop();
 		CONFIG = BUILDER.build();
 	}

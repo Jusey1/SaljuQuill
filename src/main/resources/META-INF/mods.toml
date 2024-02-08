@@ -4,11 +4,11 @@ license="MIT License"
 
 [[mods]]
 modId="quill"
-version="1.6.1"
+version="1.6.3"
 displayName="Salju's Quill"
-credits="Jusey1, Burack"
 displayURL="https://discord.gg/s7QaYGUzZU"
 logoFile="logo.png"
+credits="Jusey1, Burack"
 authors="Jusey1"
 description="Small collection of edits"
 
