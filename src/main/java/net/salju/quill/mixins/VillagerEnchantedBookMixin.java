@@ -1,5 +1,8 @@
 package net.salju.quill.mixins;
 
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.Mixin;
 import net.salju.quill.init.QuillVillagers;
 
@@ -11,7 +14,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.entity.npc.VillagerType;
-import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.util.RandomSource;
@@ -23,9 +25,9 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 @Mixin(targets = {"net.minecraft.world.entity.npc.VillagerTrades$EnchantBookForEmeralds"})
-public class VillagerEnchantedBookMixin implements VillagerTrades.ItemListing {
-	@Override
-	public MerchantOffer getOffer(Entity entity, RandomSource rng) {
+public class VillagerEnchantedBookMixin {
+	@Inject(method = "getOffer", at = @At(value = "INVOKE"), cancellable = true)
+	public void newOffer(Entity entity, RandomSource rng, CallbackInfoReturnable<MerchantOffer> ci) {
 		List<Enchantment> van = BuiltInRegistries.ENCHANTMENT.stream().filter(Enchantment::isTradeable).collect(Collectors.toList());
 		Enchantment ench = van.get(rng.nextInt(van.size()));
 		int e = Mth.nextInt(rng, 0, 2);
@@ -63,7 +65,7 @@ public class VillagerEnchantedBookMixin implements VillagerTrades.ItemListing {
 		if (j > 64) {
 			j = 64;
 		}
-		return new MerchantOffer(new ItemStack(Items.EMERALD, j), new ItemStack(Items.BOOK), book, 12, (5 * i), 0.2F);
+		ci.setReturnValue(new MerchantOffer(new ItemStack(Items.EMERALD, j), new ItemStack(Items.BOOK), book, 12, (5 * i), 0.2F));
 	}
 
 	private List<Enchantment> getPlains() {
