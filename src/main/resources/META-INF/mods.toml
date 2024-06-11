@@ -4,7 +4,7 @@ license="MIT License"
 
 [[mods]]
 modId="quill"
-version="1.6.3"
+version="1.7.1"
 displayName="Salju's Quill"
 displayURL="https://discord.gg/s7QaYGUzZU"
 logoFile="logo.png"
@@ -21,4 +21,10 @@ description="Small collection of edits"
 
 
 
+[[dependencies.quill]]
+    modId="trials"
+    mandatory=false
+    versionRange="[0,)"
+    ordering="NONE"
+    side="BOTH"
 
