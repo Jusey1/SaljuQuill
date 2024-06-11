@@ -4,8 +4,7 @@ import net.salju.quill.init.QuillVillagers;
 import net.salju.quill.init.QuillTags;
 import net.salju.quill.init.QuillEnchantments;
 import net.salju.quill.init.QuillConfig;
-
-import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.Event.Result;
@@ -13,14 +12,15 @@ import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.CriticalHitEvent;
+import net.minecraftforge.event.entity.living.ShieldBlockEvent;
 import net.minecraftforge.event.entity.living.MobSpawnEvent;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingGetProjectileEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.common.Tags;
-
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Block;
@@ -37,11 +37,12 @@ import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.entity.vehicle.Boat;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerData;
 import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.monster.Phantom;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.animal.camel.Camel;
@@ -71,10 +72,11 @@ public class QuillEvents {
 		if (event.getEntity() != null && event.getSource().getDirectEntity() != null) {
 			Entity direct = event.getSource().getDirectEntity();
 			LivingEntity target = event.getEntity();
-			float damage = event.getAmount();
-			if (direct instanceof AbstractArrow && direct.getPersistentData().getDouble("Sharpshooter") > 0) {
-				double x = direct.getPersistentData().getDouble("Sharpshooter");
-				event.setAmount((float) (Math.round(Mth.nextInt(RandomSource.create(), 7, 11)) + (2.5 * x)));
+			if (direct instanceof Projectile proj) {
+				if (proj.getPersistentData().getDouble("Sharpshooter") > 0) {
+					double x = direct.getPersistentData().getDouble("Sharpshooter");
+					event.setAmount((float) (Math.round(Mth.nextInt(RandomSource.create(), 7, 11)) + (2.5 * x)));
+				}
 			} else if (direct instanceof LivingEntity attacker) {
 				if (attacker.getMainHandItem().getEnchantmentLevel(QuillEnchantments.AUTO_SMELT.get()) > 0) {
 					target.setSecondsOnFire(3);
@@ -83,13 +85,12 @@ public class QuillEvents {
 					ItemStack stack = target.getUseItem();
 					if (stack.getItem() instanceof SwordItem && QuillManager.isSwordBlocked(event.getSource(), target)) {
 						float d = (((float) target.getAttributeValue(Attributes.ATTACK_DAMAGE) - 2.0F) + EnchantmentHelper.getDamageBonus(stack, attacker.getMobType()));
-						event.setAmount(damage * 0.75F);
+						event.setAmount(event.getAmount() * 0.75F);
 						target.swing(target.getUsedItemHand(), true);
 						if (target instanceof Player player) {
 							attacker.hurt(player.damageSources().playerAttack(player), d);
 							if (player.level() instanceof ServerLevel lvl && d > 2.0F) {
-								int i = (int) (d * 0.5F);
-								lvl.sendParticles(ParticleTypes.DAMAGE_INDICATOR, attacker.getX(), attacker.getY(0.5), attacker.getZ(), i, 0.1, 0.0, 0.1, 0.2);
+								lvl.sendParticles(ParticleTypes.DAMAGE_INDICATOR, attacker.getX(), attacker.getY(0.5), attacker.getZ(), (int) (d * 0.5F), 0.15, 0.0, 0.15, 0.25);
 							}
 						} else {
 							attacker.hurt(target.damageSources().mobAttack(target), d);
@@ -102,6 +103,25 @@ public class QuillEvents {
 							int i = (stack.getItem() instanceof SwordItem ? 30 : 12);
 							player.getCooldowns().addCooldown(stack.getItem(), i);
 						}
+					}
+				}
+			}
+		}
+	}
+
+	@SubscribeEvent
+	public static void OnDamage(LivingDamageEvent event) {
+		if (event.getEntity() != null && event.getSource().getDirectEntity() != null) {
+			Entity direct = event.getSource().getDirectEntity();
+			LivingEntity target = event.getEntity();
+			if (direct instanceof Projectile proj) {
+				if (proj.getOwner() instanceof Player player) {
+					float d = event.getAmount();
+					if (target.getHealth() < event.getAmount()) {
+						d = target.getHealth();
+					}
+					if (player.level() instanceof ServerLevel lvl && d > 2.0F && target.attackable() && !event.isCanceled()) {
+						lvl.sendParticles(ParticleTypes.DAMAGE_INDICATOR, target.getX(), target.getY(0.5), target.getZ(), (int) (d * 0.5F), 0.15, 0.0, 0.15, 0.25);
 					}
 				}
 			}
@@ -124,6 +144,32 @@ public class QuillEvents {
 				event.setProjectileItemStack(new ItemStack(Items.ARROW));
 			} else if (event.getProjectileItemStack().getItem() == Items.ARROW) {
 				event.setProjectileItemStack(event.getProjectileItemStack().copy());
+			}
+		}
+	}
+
+	@SubscribeEvent
+	public static void onBlockAttack(ShieldBlockEvent event) {
+		if (event.getEntity() != null && event.getDamageSource().getDirectEntity() != null) {
+			ItemStack stack = event.getEntity().getUseItem();
+			if (event.getDamageSource().getDirectEntity() instanceof LivingEntity target) {
+				int i = stack.getEnchantmentLevel(QuillEnchantments.SPIKES.get());
+				int e = stack.getEnchantmentLevel(QuillEnchantments.BLAZE.get());
+				if (i > 0) {
+					if (event.getEntity() instanceof Player player) {
+						float d = (target instanceof Phantom ? (float) (i * 2.5F) : (float) i);
+						target.hurt(player.damageSources().playerAttack(player), d);
+						if (player.level() instanceof ServerLevel lvl && d > 2.0F) {
+							lvl.sendParticles(ParticleTypes.DAMAGE_INDICATOR, target.getX(), target.getY(0.5), target.getZ(), (int) (d * 0.5F), 0.15, 0.0, 0.15, 0.25);
+						}
+					} else {
+						float d = (target instanceof Phantom ? (float) (i * 2.5F) : (float) i);
+						target.hurt(event.getEntity().damageSources().mobAttack(event.getEntity()), d);
+					}
+				}
+				if (e > 0) {
+					target.setSecondsOnFire(e * 3);
+				}
 			}
 		}
 	}
@@ -261,7 +307,7 @@ public class QuillEvents {
 					stack.shrink(1);
 				}
 			}
-		} else if (stack.getItem() instanceof HoeItem && QuillConfig.FARMER.get()) {
+		} else if (stack.getItem() instanceof HoeItem && QuillConfig.FARMER.get()) {
 			Block target = state.getBlock();
 			if (target instanceof CropBlock crops && crops.isMaxAge(state)) {
 				player.swing(event.getHand());

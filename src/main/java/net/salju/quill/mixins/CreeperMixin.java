@@ -5,13 +5,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Mixin;
-
-import net.salju.quill.network.Fireworks;
+import net.salju.quill.network.Fireworks;
 import net.salju.quill.init.QuillModSounds;
 import net.salju.quill.init.QuillConfig;
 import net.salju.quill.QuillMod;
-
-import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.sounds.SoundSource;

@@ -11,8 +11,7 @@ import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.FireworkParticles;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.Minecraft;
-
-import javax.annotation.Nullable;
+import javax.annotation.Nullable;
 import java.util.List;
 import com.google.common.collect.Lists;
 
@@ -102,4 +101,4 @@ public class QuillClientManager {
 		finalTag.put("Explosions", nbt);
 		return finalTag;
 	}
-}
+}
