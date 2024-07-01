@@ -14,10 +14,10 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.CriticalHitEvent;
 import net.minecraftforge.event.entity.living.ShieldBlockEvent;
 import net.minecraftforge.event.entity.living.MobSpawnEvent;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingGetProjectileEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.common.Tags;
 import net.minecraft.world.level.block.state.BlockState;
@@ -83,7 +83,7 @@ public class QuillEvents {
 				}
 				if (target.isUsingItem()) {
 					ItemStack stack = target.getUseItem();
-					if (stack.getItem() instanceof SwordItem && QuillManager.isSwordBlocked(event.getSource(), target)) {
+					if (stack.getItem() instanceof SwordItem && QuillManager.isBlocked(event.getSource(), target)) {
 						float d = (((float) target.getAttributeValue(Attributes.ATTACK_DAMAGE) - 2.0F) + EnchantmentHelper.getDamageBonus(stack, attacker.getMobType()));
 						event.setAmount(event.getAmount() * 0.75F);
 						target.swing(target.getUsedItemHand(), true);
@@ -114,7 +114,7 @@ public class QuillEvents {
 		if (event.getEntity() != null && event.getSource().getDirectEntity() != null) {
 			Entity direct = event.getSource().getDirectEntity();
 			LivingEntity target = event.getEntity();
-			if (direct instanceof Projectile proj) {
+			if (direct instanceof Projectile proj && target.attackable()) {
 				if (proj.getOwner() instanceof Player player) {
 					float d = event.getAmount();
 					if (target.getHealth() < event.getAmount()) {
@@ -167,7 +167,7 @@ public class QuillEvents {
 						target.hurt(event.getEntity().damageSources().mobAttack(event.getEntity()), d);
 					}
 				}
-				if (e > 0) {
+				if (e > 0 && !target.fireImmune()) {
 					target.setSecondsOnFire(e * 3);
 				}
 			}
@@ -383,4 +383,4 @@ public class QuillEvents {
 			}
 		}
 	}
-}
+}

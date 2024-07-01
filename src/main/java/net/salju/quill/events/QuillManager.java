@@ -40,7 +40,7 @@ public class QuillManager {
 		return check;
 	}
 
-	public static boolean isSwordBlocked(DamageSource source, LivingEntity target) {
+	public static boolean isBlocked(DamageSource source, LivingEntity target) {
 		if (!source.is(DamageTypeTags.BYPASSES_SHIELD)) {
 			Vec3 vec32 = source.getSourcePosition();
 			if (vec32 != null) {

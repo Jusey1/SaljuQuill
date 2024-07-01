@@ -4,15 +4,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.Mixin;
-
-import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.player.AbstractClientPlayer;
-
-import com.mojang.math.Axis;
+import com.mojang.math.Axis;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 @Mixin(ItemInHandRenderer.class)

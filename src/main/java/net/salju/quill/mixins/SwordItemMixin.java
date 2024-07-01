@@ -2,8 +2,7 @@ package net.salju.quill.mixins;
 
 import org.spongepowered.asm.mixin.Mixin;
 import net.salju.quill.init.QuillConfig;
-
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.Tier;

@@ -27,7 +27,7 @@ public class QuillConfig {
 		RIDER = BUILDER.comment("Should this mod's entity rider changes be implemented?").define("Riders", true);
 		FARMER = BUILDER.comment("Should hoes have the ability to harvest crops?").define("Crops Harvest", true);
 		PICKMAN = BUILDER.comment("Should pickaxes have better critical hits?").define("Pickman", true);
-		SWORD = BUILDER.comment("Should swords have the parry ability?").define("Parrying", true);
+		SWORD = BUILDER.comment("Should tools have the parry ability?").define("Parrying", true);
 		USER = BUILDER.comment("Should basic items get a cooldown during use after being hit by an enemy?").define("User", true);
 		CROSSBOW = BUILDER.comment("Should crossbows have infinity?").define("Ceaseless Crossbows", true);
 		CAMPFIRE = BUILDER.comment("Should campfires disable enemy spawning if lit?").define("Campfire Protection", true);
