@@ -18,6 +18,7 @@ public class QuillConfig {
 	public static final ForgeConfigSpec.BooleanValue CAMPFIRE;
 	public static final ForgeConfigSpec.BooleanValue DEATH;
 	public static final ForgeConfigSpec.BooleanValue DND;
+	public static final ForgeConfigSpec.BooleanValue SHIELD;
 	
 	static {
 		BUILDER.push("Features");
@@ -33,6 +34,7 @@ public class QuillConfig {
 		CAMPFIRE = BUILDER.comment("Should campfires disable enemy spawning if lit?").define("Campfire Protection", true);
 		DEATH = BUILDER.comment("Should hotbar & equipment be kept on death?").define("Death Protection", true);
 		DND = BUILDER.comment("Should players be unable to break most blocks in survival mode?").define("Caves & Kobolds", false);
+		SHIELD = BUILDER.comment("Should the shield be prioritized when using it with an axe while right-clicking on copper & logs?").define("I-Wanna-Block", true);
 		BUILDER.pop();
 		CONFIG = BUILDER.build();
 	}

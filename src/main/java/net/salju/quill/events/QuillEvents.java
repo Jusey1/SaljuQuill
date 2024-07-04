@@ -30,12 +30,14 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.BowItem;
+import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.player.Player;
@@ -110,7 +112,7 @@ public class QuillEvents {
 	}
 
 	@SubscribeEvent
-	public static void OnDamage(LivingDamageEvent event) {
+	public static void onDamage(LivingDamageEvent event) {
 		if (event.getEntity() != null && event.getSource().getDirectEntity() != null) {
 			Entity direct = event.getSource().getDirectEntity();
 			LivingEntity target = event.getEntity();
@@ -158,13 +160,13 @@ public class QuillEvents {
 				if (i > 0) {
 					if (event.getEntity() instanceof Player player) {
 						float d = (target instanceof Phantom ? (float) (i * 2.5F) : (float) i);
-						target.hurt(player.damageSources().playerAttack(player), d);
+						target.hurt(player.damageSources().thorns(player), d);
 						if (player.level() instanceof ServerLevel lvl && d > 2.0F) {
 							lvl.sendParticles(ParticleTypes.DAMAGE_INDICATOR, target.getX(), target.getY(0.5), target.getZ(), (int) (d * 0.5F), 0.15, 0.0, 0.15, 0.25);
 						}
 					} else {
 						float d = (target instanceof Phantom ? (float) (i * 2.5F) : (float) i);
-						target.hurt(event.getEntity().damageSources().mobAttack(event.getEntity()), d);
+						target.hurt(event.getEntity().damageSources().thorns(event.getEntity()), d);
 					}
 				}
 				if (e > 0 && !target.fireImmune()) {
@@ -307,6 +309,8 @@ public class QuillEvents {
 					stack.shrink(1);
 				}
 			}
+		} else if (player.getOffhandItem().getItem() instanceof ShieldItem && stack.getItem() instanceof AxeItem && state.is(QuillTags.AXER) && QuillConfig.SHIELD.get()) {
+			event.setCanceled(true);
 		} else if (stack.getItem() instanceof HoeItem && QuillConfig.FARMER.get()) {
 			Block target = state.getBlock();
 			if (target instanceof CropBlock crops && crops.isMaxAge(state)) {
@@ -383,4 +387,4 @@ public class QuillEvents {
 			}
 		}
 	}
-}
+}
