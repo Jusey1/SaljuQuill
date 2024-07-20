@@ -15,7 +15,8 @@
      "VillagerEnchantedBookMixin",
      "InventoryMixin",
      "ServerPlayerMixin",
-     "CreeperMixin"
+     "CreeperMixin",
+     "FletcherBlockMixin"
   ],
   "client": [
      "ItemInHandRendererMixin"
