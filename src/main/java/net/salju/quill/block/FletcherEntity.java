@@ -130,9 +130,9 @@ public class FletcherEntity extends BaseContainerBlockEntity {
 
 	@Override
 	public void clearContent() {
-		double x = (double) this.getBlockPos().getX();
+		double x = ((double) this.getBlockPos().getX() + 0.5);
 		double y = ((double) this.getBlockPos().getY() + 0.5);
-		double z = (double) this.getBlockPos().getZ();
+		double z = ((double) this.getBlockPos().getZ() + 0.5);
 		for (ItemStack stack : this.stacks) {
 			if (!stack.isEmpty() && !this.isResultItem(stack)) {
 				Containers.dropItemStack(this.getLevel(), x, y, z, stack);
@@ -143,21 +143,6 @@ public class FletcherEntity extends BaseContainerBlockEntity {
 
 	public ItemStack getResultItem() {
 		return this.stacks.get(4);
-	}
-
-	public void setResultItem(ItemStack stack) {
-		this.stacks.set(4, stack.copy());
-		this.updateBlock();
-	}
-
-	public int getPower() {
-		int i = 0;
-		for (ItemStack stack : this.stacks) {
-			if (!stack.isEmpty() && !this.isResultItem(stack)) {
-				i++;
-			}
-		}
-		return i;
 	}
 
 	public boolean isResultItem(ItemStack stack) {
@@ -178,9 +163,9 @@ public class FletcherEntity extends BaseContainerBlockEntity {
 					stack = PotionUtils.setPotion(new ItemStack(Items.TIPPED_ARROW), PotionUtils.getPotion(target.getItem(3)));
 				}
 				stack.setCount(QuillConfig.ARROWS.get());
-				target.setResultItem(stack);
+				target.setItem(4, stack);
 			} else {
-				target.setResultItem(ItemStack.EMPTY);
+				target.setItem(4, ItemStack.EMPTY);
 			}
 		}
 	}
