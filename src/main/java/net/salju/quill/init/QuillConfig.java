@@ -19,6 +19,7 @@ public class QuillConfig {
 	public static final ForgeConfigSpec.BooleanValue DEATH;
 	public static final ForgeConfigSpec.BooleanValue DND;
 	public static final ForgeConfigSpec.BooleanValue SHIELD;
+	public static final ForgeConfigSpec.IntValue ARROWS;
 	
 	static {
 		BUILDER.push("Features");
@@ -35,6 +36,7 @@ public class QuillConfig {
 		DEATH = BUILDER.comment("Should hotbar & equipment be kept on death?").define("Death Protection", true);
 		DND = BUILDER.comment("Should players be unable to break most blocks in survival mode?").define("Caves & Kobolds", false);
 		SHIELD = BUILDER.comment("Should the shield be prioritized when using it with an axe while right-clicking on copper & logs?").define("I-Wanna-Block", true);
+		ARROWS = BUILDER.comment("How many arrows can be crafted with the Fletching Table?").defineInRange("Arrows", 8, 4, 64);
 		BUILDER.pop();
 		CONFIG = BUILDER.build();
 	}

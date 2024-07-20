@@ -36,12 +36,14 @@ public class QuillMod {
 		MinecraftForge.EVENT_BUS.register(this);
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 		QuillBlocks.REGISTRY.register(bus);
+		QuillBlockEntities.REGISTRY.register(bus);
+		MinecraftItems.REGISTRY.register(bus);
 		QuillItems.REGISTRY.register(bus);
 		QuillEnchantments.REGISTRY.register(bus);
 		QuillModSounds.REGISTRY.register(bus);
+		QuillMenus.REGISTRY.register(bus);
 		QuillMod.debugVillagerLog();
 		QuillVillagers.REGISTRY.register(bus);
-		AxeModItems.REGISTRY.register(bus);
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, QuillConfig.CONFIG, "quill-common.toml");
 	}
 
