@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "quill:item/helmet_feather",
+    "layer1": "quill:item/netherite_helmet",
+    "layer2": "quill:item/helmet_trim_netherite_darker"
+  }
+}

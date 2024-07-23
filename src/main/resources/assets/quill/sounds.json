@@ -7,5 +7,23 @@
         "stream": false
       }
     ]
+  },
+  "cannon_spin": {
+    "subtitle": "subtitles.cannon_spin",
+    "sounds": [
+      {
+        "name": "quill:cannon_spin",
+        "stream": false
+      }
+    ]
+  },
+  "cannon_shoot": {
+    "subtitle": "subtitles.cannon_shoot",
+    "sounds": [
+      {
+        "name": "quill:cannon_shoot",
+        "stream": false
+      }
+    ]
   }
 }
