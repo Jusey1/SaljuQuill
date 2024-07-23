@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:diamond"
+    },
+    "F": {
+      "item": "minecraft:feather"
+    }
+  },
+  "pattern": [
+    " F ",
+    "III",
+    "I I"
+  ],
+  "result": {
+    "count": 1,
+    "item": "quill:diamond_helmet"
+  }
+}
