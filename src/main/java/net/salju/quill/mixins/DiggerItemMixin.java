@@ -15,7 +15,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.core.BlockPos;
 
 @Mixin(DiggerItem.class)
-public class DiggerItemMixin extends TieredItem implements Vanishable {
+public class DiggerItemMixin extends TieredItem implements Vanishable {	
 	public DiggerItemMixin(Tier t, Item.Properties p) {
 		super(t, p);
 	}

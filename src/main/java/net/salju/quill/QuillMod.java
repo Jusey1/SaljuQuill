@@ -2,8 +2,8 @@ package net.salju.quill;
 
 import org.slf4j.Logger;
 import net.salju.quill.init.*;
-
-import net.minecraftforge.network.simple.SimpleChannel;
+import net.salju.quill.events.QuillLoot;
+import net.minecraftforge.network.simple.SimpleChannel;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkDirection;
@@ -13,19 +13,16 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.common.MinecraftForge;
-
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.FriendlyByteBuf;
-
-import java.util.function.Supplier;
+import java.util.function.Supplier;
 import java.util.function.Function;
 import java.util.function.BiConsumer;
 import java.util.Map;
-
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import com.mojang.logging.LogUtils;
 
 @Mod("quill")
@@ -34,6 +31,7 @@ public class QuillMod {
 
 	public QuillMod() {
 		MinecraftForge.EVENT_BUS.register(this);
+		MinecraftForge.EVENT_BUS.register(new QuillLoot());
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 		QuillBlocks.REGISTRY.register(bus);
 		QuillBlockEntities.REGISTRY.register(bus);
@@ -41,8 +39,10 @@ public class QuillMod {
 		QuillItems.REGISTRY.register(bus);
 		QuillEnchantments.REGISTRY.register(bus);
 		QuillModSounds.REGISTRY.register(bus);
+		QuillMobs.REGISTRY.register(bus);
 		QuillMenus.REGISTRY.register(bus);
 		QuillMod.debugVillagerLog();
+		QuillTabs.REGISTRY.register(bus);
 		QuillVillagers.REGISTRY.register(bus);
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, QuillConfig.CONFIG, "quill-common.toml");
 	}
