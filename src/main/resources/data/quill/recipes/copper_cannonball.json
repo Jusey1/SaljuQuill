@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "III",
+    "IXI",
+    "III"
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:copper_ingot"
+    },
+    "X": {
+      "item": "minecraft:gunpowder"
+    }
+  },
+  "result": {
+    "item": "quill:copper_cannonball",
+    "count": 8
+  }
+}

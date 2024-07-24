@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "quill:diamond_helmet",
+    "quill:netherite_helmet",
+    "quill:iron_helmet",
+    "quill:golden_helmet"
+  ]
+}

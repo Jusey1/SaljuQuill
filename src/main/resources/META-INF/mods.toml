@@ -1,0 +1,30 @@
+modLoader="javafml"
+loaderVersion="[47,)"
+license="MIT License"
+
+[[mods]]
+modId="quill"
+version="1.8.1"
+displayName="Salju's Quill"
+displayURL="https://discord.gg/s7QaYGUzZU"
+logoFile="logo.png"
+credits="Jusey1, Burack"
+authors="Jusey1"
+description="Small collection of edits"
+
+[[dependencies.quill]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.20.1]"
+    ordering="NONE"
+    side="BOTH"
+
+
+
+[[dependencies.quill]]
+    modId="trials"
+    mandatory=false
+    versionRange="[0,)"
+    ordering="NONE"
+    side="BOTH"
+

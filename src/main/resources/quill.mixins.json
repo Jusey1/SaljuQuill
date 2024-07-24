@@ -1,0 +1,28 @@
+{
+  "required": true,
+  "package": "net.salju.quill.mixins",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "quill.refmap.json",
+  "mixins": [
+     "CrossbowItemMixin",
+     "DiggerItemMixin",
+     "SwordItemMixin",
+     "ShieldItemMixin",
+     "HorseArmorItemMixin",
+     "EnchantmentHelperMixin",
+     "DamageEnchantmentMixin",
+     "ArrowInfiniteEnchantmentMixin",
+     "VillagerEnchantedBookMixin",
+     "InventoryMixin",
+     "ServerPlayerMixin",
+     "CreeperMixin",
+     "FletcherBlockMixin"
+  ],
+  "client": [
+     "ItemInHandRendererMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "minVersion": "0.8"
+}
