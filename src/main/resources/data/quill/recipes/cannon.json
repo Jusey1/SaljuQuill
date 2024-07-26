@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " DO",
+    "BRB",
+    "I I"
+  ],
+  "key": {
+    "B": {
+      "item": "minecraft:iron_block"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "R": {
+      "item": "minecraft:redstone_torch"
+    },
+    "D": {
+      "item": "minecraft:dispenser"
+    },
+    "O": {
+      "item": "minecraft:observer"
+    }
+  },
+  "result": {
+    "item": "quill:cannon",
+    "count": 1
+  }
+}

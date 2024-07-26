@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " II",
+    "SPI",
+    "IS "
+  ],
+  "key": {
+    "P": {
+      "item": "minecraft:ender_pearl"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "S": {
+      "item": "minecraft:echo_shard"
+    }
+  },
+  "result": {
+    "item": "quill:magic_mirror",
+    "count": 1
+  }
+}
