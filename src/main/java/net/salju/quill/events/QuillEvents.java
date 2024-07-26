@@ -5,12 +5,10 @@ import net.salju.quill.init.QuillTags;
 import net.salju.quill.init.QuillItems;
 import net.salju.quill.init.QuillEnchantments;
 import net.salju.quill.init.QuillConfig;
-
-import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.Event.Result;
-import net.minecraftforge.event.village.WandererTradesEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -23,8 +21,7 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.common.Tags;
-
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Block;
@@ -69,8 +66,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.BlockPos;
-
-import java.util.Optional;
+import java.util.Optional;
 import java.util.List;
 
 @Mod.EventBusSubscriber
@@ -258,17 +254,6 @@ public class QuillEvents {
 			master.add(new QuillVillagerManager.FishermanMaster(25));
 			event.getTrades().put(5, master);
 		}
-	}
-
-	@SubscribeEvent
-	public static void onWanderTrades(WandererTradesEvent event) {
-		List<VillagerTrades.ItemListing> rares = event.getRareTrades();
-		if (QuillConfig.WANDER.get()) {
-			rares.clear();
-		}
-		rares.add(new QuillVillagerManager.ItemsForEmeralds(QuillItems.BUNDLE.get(), 28, 1, 15, 1));
-		rares.add(new QuillVillagerManager.ItemsForEmeralds(QuillItems.MAGIC_MIRROR.get(), 21, 1, 15, 1));
-		rares.add(new QuillVillagerManager.ItemsForEmeralds(QuillItems.CANNON.get(), 56, 1, 15, 1));
 	}
 
 	@SubscribeEvent

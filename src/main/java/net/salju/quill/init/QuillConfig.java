@@ -19,14 +19,12 @@ public class QuillConfig {
 	public static final ForgeConfigSpec.BooleanValue DEATH;
 	public static final ForgeConfigSpec.BooleanValue DND;
 	public static final ForgeConfigSpec.BooleanValue SHIELD;
-	public static final ForgeConfigSpec.BooleanValue WANDER;
 	public static final ForgeConfigSpec.IntValue ARROWS;
 	
 	static {
 		BUILDER.push("Features");
 		CREEPER = BUILDER.comment("Should creepers be prideful?").define("Prideful Creepers", true);
 		TRADES = BUILDER.comment("Should updated villager trades be enabled?").define("Villager Trades", true);
-		WANDER = BUILDER.comment("Should Wanderer Trader's default rares be removed to make space for special items?").define("Wanderer Trades", true);
 		OCEAN = BUILDER.comment("Should ocean villagers be enabled?").define("Pirate Villagers", true);
 		RIDER = BUILDER.comment("Should this mod's entity rider changes be implemented?").define("Riders", true);
 		FARMER = BUILDER.comment("Should hoes have the ability to harvest crops?").define("Crops Harvest", true);
