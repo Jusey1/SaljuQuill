@@ -6,6 +6,7 @@
   "mixins": [
      "CrossbowItemMixin",
      "DiggerItemMixin",
+     "AxeItemMixin",
      "SwordItemMixin",
      "ShieldItemMixin",
      "HorseArmorItemMixin",
@@ -15,7 +16,8 @@
      "VillagerEnchantedBookMixin",
      "InventoryMixin",
      "ServerPlayerMixin",
-     "CreeperMixin",
+     "CreeperMixin"
+,
      "FletcherBlockMixin"
   ],
   "client": [
