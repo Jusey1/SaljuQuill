@@ -32,7 +32,7 @@ public class FletcherResultSlot extends Slot {
 				if (!stack.isEmpty() && !target.isResultItem(stack)) {
 					if (stack.getItem() instanceof PotionItem) {
 						target.setItem(3, new ItemStack(Items.GLASS_BOTTLE));
-					} else if (stack != target.getItem(3)) {
+					} else if (stack.getItem() != Items.GLASS_BOTTLE) {
 						stack.shrink(1);
 					}
 				}

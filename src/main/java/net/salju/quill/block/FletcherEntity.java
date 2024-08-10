@@ -105,7 +105,7 @@ public class FletcherEntity extends BaseContainerBlockEntity {
 			return true;
 		} else if (i == 2 && stack.is(Items.FEATHER)) {
 			return true;
-		} else if (i == 3 && stack.getItem() instanceof PotionItem) {
+		} else if (i == 3 && (stack.getItem() instanceof PotionItem || stack.is(Items.GLOWSTONE_DUST))) {
 			return true;
 		}
 		return false;
@@ -161,6 +161,8 @@ public class FletcherEntity extends BaseContainerBlockEntity {
 				ItemStack stack = new ItemStack(Items.ARROW);
 				if (target.getItem(3).getItem() instanceof PotionItem) {
 					stack = PotionUtils.setPotion(new ItemStack(Items.TIPPED_ARROW), PotionUtils.getPotion(target.getItem(3)));
+				} else if (target.getItem(3).is(Items.GLOWSTONE_DUST)) {
+					stack = new ItemStack(Items.SPECTRAL_ARROW);
 				}
 				stack.setCount(QuillConfig.ARROWS.get());
 				target.setItem(4, stack);

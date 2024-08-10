@@ -2,7 +2,6 @@ package net.salju.quill.events;
 
 import net.salju.quill.init.QuillVillagers;
 import net.salju.quill.init.QuillTags;
-import net.salju.quill.init.QuillItems;
 import net.salju.quill.init.QuillEnchantments;
 import net.salju.quill.init.QuillConfig;
 import net.minecraftforge.fml.common.Mod;
@@ -42,7 +41,6 @@ import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerData;
 import net.minecraft.world.entity.npc.Villager;
