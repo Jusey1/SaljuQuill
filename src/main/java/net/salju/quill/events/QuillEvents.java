@@ -131,15 +131,6 @@ public class QuillEvents {
 	}
 
 	@SubscribeEvent
-	public static void onCritical(CriticalHitEvent event) {
-		if (event.isVanillaCritical()) {
-			if (event.getEntity().getMainHandItem().getItem() instanceof PickaxeItem && QuillConfig.PICKMAN.get()) {
-				event.setDamageModifier(event.getDamageModifier() + 0.5F);
-			}
-		}
-	}
-
-	@SubscribeEvent
 	public static void onProjectile(LivingGetProjectileEvent event) {
 		if ((event.getProjectileWeaponItemStack().getItem() instanceof CrossbowItem || event.getProjectileWeaponItemStack().getItem() instanceof BowItem) && event.getProjectileWeaponItemStack().getEnchantmentLevel(Enchantments.INFINITY_ARROWS) > 0) {
 			if (event.getProjectileItemStack().isEmpty()) {
@@ -346,14 +337,6 @@ public class QuillEvents {
 					}
 				}
 			}
-		}
-	}
-
-	@SubscribeEvent(priority = EventPriority.HIGHEST)
-	public static void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
-		BlockState state = event.getEntity().level().getBlockState(event.getPos());
-		if (!event.getEntity().isCreative() && !state.is(QuillTags.DND) && QuillConfig.DND.get()) {
-			event.setCanceled(true);
 		}
 	}
 

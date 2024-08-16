@@ -2,7 +2,7 @@ package net.salju.quill.mixins;
 
 import org.spongepowered.asm.mixin.Mixin;
 import net.salju.quill.init.QuillConfig;
-
+import net.minecraft.world.item.enchantment.MendingEnchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ArrowInfiniteEnchantment;
@@ -19,5 +19,10 @@ public class ArrowInfiniteEnchantmentMixin extends Enchantment {
 	@Override
 	public boolean canEnchant(ItemStack stack) {
 		return (stack.getItem() instanceof CrossbowItem && QuillConfig.CROSSBOW.get()) ? true : super.canEnchant(stack);
+	}
+
+	@Override
+	public boolean checkCompatibility(Enchantment ench) {
+		return (ench instanceof MendingEnchantment && !QuillConfig.COMBO.get()) ? false : super.checkCompatibility(ench);
 	}
 }

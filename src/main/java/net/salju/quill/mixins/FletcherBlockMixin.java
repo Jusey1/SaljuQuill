@@ -1,6 +1,5 @@
 package net.salju.quill.mixins;
 
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Mixin;
 import net.salju.quill.init.QuillBlockEntities;
 import net.salju.quill.block.FletcherEntity;

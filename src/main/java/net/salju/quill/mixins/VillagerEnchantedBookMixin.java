@@ -5,8 +5,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.Mixin;
 import net.salju.quill.init.QuillVillagers;
-
-import net.minecraft.world.item.trading.MerchantOffer;
+import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -19,8 +18,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Mth;
 import net.minecraft.core.registries.BuiltInRegistries;
-
-import java.util.stream.Collectors;
+import java.util.stream.Collectors;
 import java.util.List;
 import com.google.common.collect.Lists;
 
@@ -65,7 +63,7 @@ public class VillagerEnchantedBookMixin {
 		if (j > 64) {
 			j = 64;
 		}
-		ci.setReturnValue(new MerchantOffer(new ItemStack(Items.EMERALD, j), new ItemStack(Items.BOOK), book, 12, (5 * i), 0.2F));
+		ci.setReturnValue(new MerchantOffer(new ItemStack(Items.EMERALD, j), new ItemStack(Items.BOOK), book, 12, 5 * i, 0.2F));
 	}
 
 	private List<Enchantment> getPlains() {

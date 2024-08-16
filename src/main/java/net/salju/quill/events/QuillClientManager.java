@@ -101,4 +101,4 @@ public class QuillClientManager {
 		finalTag.put("Explosions", nbt);
 		return finalTag;
 	}
-}
+}

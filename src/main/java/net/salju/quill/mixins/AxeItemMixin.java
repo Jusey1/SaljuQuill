@@ -1,6 +1,7 @@
 package net.salju.quill.mixins;
 
 import org.spongepowered.asm.mixin.Mixin;
+import net.salju.quill.init.QuillConfig;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Item;
@@ -22,13 +23,13 @@ public class AxeItemMixin extends DiggerItem {
 
 	@Override
 	public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot slot) {
-		if (slot == EquipmentSlot.MAINHAND) {
+		if (slot == EquipmentSlot.MAINHAND && QuillConfig.AXER.get()) {
 			ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
 			if (this.asItem() == Items.IRON_AXE) {
 				builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Tool modifier", 7.0, AttributeModifier.Operation.ADDITION));
 				builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Tool modifier", -3.0, AttributeModifier.Operation.ADDITION));
 				return builder.build();
-			} else if (this.asItem() == Items.STONE_AXE) {
+			} else if (this.asItem() == Items.STONE_AXE) {
 				builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Tool modifier", 6.0, AttributeModifier.Operation.ADDITION));
 				builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Tool modifier", -3.0, AttributeModifier.Operation.ADDITION));
 				return builder.build();
