@@ -1,6 +1,7 @@
 {
   "values": [
     "#minecraft:logs",
+    "minecraft:lightning_rod",
     "minecraft:copper_block",
     "minecraft:cut_copper",
     "minecraft:cut_copper_stairs",
@@ -32,6 +33,66 @@
     "minecraft:waxed_oxidized_copper",
     "minecraft:waxed_oxidized_cut_copper",
     "minecraft:waxed_oxidized_cut_copper_stairs",
-    "minecraft:waxed_oxidized_cut_copper_slab"
+    "minecraft:waxed_oxidized_cut_copper_slab",
+    {
+      "id": "friendsandfoes:copper_button",
+      "required": false
+    },
+    {
+      "id": "friendsandfoes:exposed_copper_button",
+      "required": false
+    },
+    {
+      "id": "friendsandfoes:weathered_copper_button",
+      "required": false
+    },
+    {
+      "id": "friendsandfoes:oxidized_copper_button",
+      "required": false
+    },
+    {
+      "id": "friendsandfoes:waxed_copper_button",
+      "required": false
+    },
+    {
+      "id": "friendsandfoes:waxed_exposed_copper_button",
+      "required": false
+    },
+    {
+      "id": "friendsandfoes:waxed_weathered_copper_button",
+      "required": false
+    },
+    {
+      "id": "friendsandfoes:waxed_oxidized_copper_button",
+      "required": false
+    },
+    {
+      "id": "friendsandfoes:exposed_lightning_rod",
+      "required": false
+    },
+    {
+      "id": "friendsandfoes:weathered_lightning_rod",
+      "required": false
+    },
+    {
+      "id": "friendsandfoes:oxidized_lightning_rod",
+      "required": false
+    },
+    {
+      "id": "friendsandfoes:waxed_lightning_rod",
+      "required": false
+    },
+    {
+      "id": "friendsandfoes:waxed_exposed_lightning_rod",
+      "required": false
+    },
+    {
+      "id": "friendsandfoes:waxed_weathered_lightning_rod",
+      "required": false
+    },
+    {
+      "id": "friendsandfoes:waxed_oxidized_lightning_rod",
+      "required": false
+    }
   ]
 }

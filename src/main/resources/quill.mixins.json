@@ -12,7 +12,7 @@
      "HorseArmorItemMixin",
      "ItemStackMixin",
      "EnchantmentHelperMixin",
-     "EnchantmentMixin",
+     "DamageEnchantmentMixin",
      "DigDurabilityEnchantmentMixin",
      "MendingEnchantmentMixin",
      "VillagerEnchantedBookMixin",

@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:book",
+    "minecraft:enchanted_book",
+    {
+      "id": "iwannaskate:skateboard",
+      "required": false
+    }
+  ]
+}
