@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.Mixin;
 public abstract class ItemStackMixin {
 	@Inject(method = "isDamageableItem", at = @At("HEAD"), cancellable = true)
 	public void isUnbreakable(CallbackInfoReturnable<Boolean> ci) {
-		if (QuillConfig.ENCHS.get()) {
+		if (QuillConfig.ENCHS.get() && QuillConfig.UNBREAKING.get()) {
 			ItemStack stack = (ItemStack) (Object) this;
 			if (stack.isEnchanted()) {
 				ci.setReturnValue(false);

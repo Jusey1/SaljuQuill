@@ -67,11 +67,13 @@ import net.minecraft.tags.BiomeTags;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.network.chat.Component;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.BlockPos;
 import java.util.Optional;
 import java.util.Map;
 import java.util.List;
+import com.google.common.collect.Maps;
 
 @Mod.EventBusSubscriber
 public class QuillEvents {
@@ -286,7 +288,7 @@ public class QuillEvents {
 
 	@SubscribeEvent
 	public static void onTick(LivingEvent.LivingTickEvent event) {
-		if (event.getEntity() instanceof Villager target && QuillConfig.RIDER.get()) {
+		if (event.getEntity() instanceof Villager target && QuillConfig.TAXI.get()) {
 			Player player = target.level().getNearestPlayer(target, 2);
 			if (player != null && player.isPassenger()) {
 				if ((player.getVehicle() instanceof Camel || player.getVehicle() instanceof Boat) && player.getVehicle().getPassengers().size() < 2) {
@@ -308,7 +310,7 @@ public class QuillEvents {
 	@SubscribeEvent
 	public static void onRightClickEntity(PlayerInteractEvent.EntityInteract event) {
 		Player player = event.getEntity();
-		if (event.getTarget() instanceof LivingEntity target && QuillConfig.RIDER.get()) {
+		if (event.getTarget() instanceof LivingEntity target && QuillConfig.KICK.get()) {
 			if (target.isPassenger() && player.isCrouching()) {
 				target.stopRiding();
 				player.swing(InteractionHand.MAIN_HAND, true);
@@ -381,37 +383,88 @@ public class QuillEvents {
 
 	@SubscribeEvent
 	public static void onGrindstone(GrindstoneEvent.OnPlaceItem event) {
-		if (QuillConfig.ENCHS.get()) {
-			if (event.getTopItem().isEnchanted() && event.getBottomItem().is(Items.ENCHANTED_BOOK)) {
-				ItemStack stack = new ItemStack(Items.ENCHANTED_BOOK);
-				EnchantmentHelper.setEnchantments(EnchantmentHelper.getEnchantments(event.getTopItem()), stack);
-				Map<Enchantment, Integer> map = EnchantmentHelper.getEnchantments(event.getBottomItem());
-				int i = 0;
-				for (Map.Entry<Enchantment, Integer> e : map.entrySet()) {
-					Enchantment ench = e.getKey();
-					if (ench != null) {
-						if (ench.isCurse()) {
-							EnchantedBookItem.addEnchantment(stack, new EnchantmentInstance(ench, e.getValue()));
-						} else {
-							i += ench.getMinCost(e.getValue());
-						}
-					}
+		if (QuillConfig.ENCHS.get() && QuillConfig.GRIND.get() && event.getTopItem().isEnchanted() && event.getBottomItem().is(Items.ENCHANTED_BOOK)) {
+			ItemStack stack = new ItemStack(Items.ENCHANTED_BOOK);
+			EnchantmentHelper.setEnchantments(EnchantmentHelper.getEnchantments(event.getTopItem()), stack);
+			Map<Enchantment, Integer> map = EnchantmentHelper.getEnchantments(event.getBottomItem());
+			int i = 0;
+			for (Enchantment ench : map.keySet()) {
+				if (ench.isCurse()) {
+					EnchantedBookItem.addEnchantment(stack, new EnchantmentInstance(ench, map.get(ench)));
+				} else {
+					i += ench.getMinCost(map.get(ench));
 				}
-				event.setOutput(stack);
-				event.setXp(i);
 			}
+			event.setOutput(stack);
+			event.setXp(i);
 		}
 	}
 
 	@SubscribeEvent
 	public static void onAnvil(AnvilUpdateEvent event) {
 		if (QuillConfig.ENCHS.get()) {
-			if (QuillManager.isValidRepairItem(event.getLeft(), event.getRight()) && event.getLeft().isDamaged()) {
+			if (QuillConfig.REPAIR.get() && QuillManager.isValidRepairItem(event.getLeft(), event.getRight()) && event.getLeft().isDamaged()) {
 				ItemStack stack = event.getLeft().copy();
 				int i = (stack.getDamageValue() > (stack.getMaxDamage() / 2) && event.getRight().getCount() > 1) ? 2 : 1;
 				stack.setDamageValue(Math.max(stack.getDamageValue() - ((stack.getMaxDamage() / 2) * i), 0));
 				event.setCost(i);
 				event.setMaterialCost(i);
+				event.setOutput(stack);
+			} else if (QuillConfig.ANBOOK.get() && (event.getLeft().isEnchantable() || event.getLeft().is(Items.ENCHANTED_BOOK) || event.getLeft().isEnchanted()) && (event.getRight().is(Items.ENCHANTED_BOOK) || (event.getRight().is(event.getLeft().getItem()) && event.getRight().isEnchanted()))) {
+				Map<Enchantment, Integer> map = event.getLeft().isEnchanted() || event.getLeft().is(Items.ENCHANTED_BOOK) ? EnchantmentHelper.getEnchantments(event.getLeft().copy()) : Maps.newLinkedHashMap();
+				Map<Enchantment, Integer> book = EnchantmentHelper.getEnchantments(event.getRight());
+				int i = 0;
+				int m = event.getLeft().is(QuillTags.DOUBENCHS) ? QuillConfig.MAXENCH.get() * 2 : QuillConfig.MAXENCH.get();
+				for (Enchantment ench : book.keySet()) {
+					int e = Math.min(map.getOrDefault(ench, 0) == book.get(ench) ? book.get(ench) + 1 : Math.max(book.get(ench), map.getOrDefault(ench, 0)), ench.getMaxLevel());
+					int t = 0;
+					boolean check = event.getLeft().is(Items.ENCHANTED_BOOK) ? true : ench.canEnchant(event.getLeft());
+					for (Enchantment target : map.keySet()) {
+						if (!target.isCurse()) {
+							t++;
+						}
+						if ((ench != target && !ench.isCompatibleWith(target)) || (ench == target && book.get(ench) == e)) {
+							check = false;
+						}
+					}
+					boolean always = (ench.isCurse() || e > book.get(ench));
+					if (check && (always || t < m)) {
+						map.put(ench, e);
+						int c = 1;
+						switch (ench.getRarity()) {
+							case UNCOMMON :
+								c = 2;
+								break;
+							case RARE :
+								c = 4;
+								break;
+							case VERY_RARE :
+								c = 6;
+						}
+						i = (i + ((e * c) / 2));
+					}
+				}
+				if (i > 0) {
+					ItemStack stack = event.getLeft().copy();
+					if (stack.isEnchanted()) {
+						stack.removeTagKey("Enchantments");
+					}
+					if (event.getName() != null && event.getName() != "") {
+						stack.setHoverName(Component.literal(event.getName()));
+						i++;
+					}
+					EnchantmentHelper.setEnchantments(map, stack);
+					event.setCost(Math.min(i, QuillConfig.MAXANBOOKCOST.get()));
+					event.setMaterialCost(1);
+					event.setOutput(stack);
+				} else {
+					event.setCanceled(true);
+				}
+			} else if (QuillConfig.RENAME.get() && !event.getLeft().isEmpty() && event.getRight().isEmpty() && event.getName() != null && event.getName() != "") {
+				ItemStack stack = event.getLeft().copy();
+				stack.setHoverName(Component.literal(event.getName()));
+				event.setCost(1);
+				event.setMaterialCost(1);
 				event.setOutput(stack);
 			}
 		}

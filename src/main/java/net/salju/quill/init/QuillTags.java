@@ -16,4 +16,5 @@ public class QuillTags {
 	public static final TagKey<Item> LI = ItemTags.create(new ResourceLocation("minecraft:ladders"));
 	public static final TagKey<Item> SHIELDS = ItemTags.create(new ResourceLocation("quill:shields"));
 	public static final TagKey<Item> CANNON = ItemTags.create(new ResourceLocation("quill:cannon_recolor"));
+	public static final TagKey<Item> DOUBENCHS = ItemTags.create(new ResourceLocation("quill:double_enchantments"));
 }

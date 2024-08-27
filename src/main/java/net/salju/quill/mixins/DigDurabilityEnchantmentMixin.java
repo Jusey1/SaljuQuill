@@ -5,7 +5,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.Mixin;
 import net.salju.quill.init.QuillConfig;
-import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.DigDurabilityEnchantment;
@@ -20,19 +19,15 @@ public class DigDurabilityEnchantmentMixin extends Enchantment {
 
 	@Inject(method = "canEnchant", at = @At("HEAD"), cancellable = true)
 	public void canEnchant(ItemStack stack, CallbackInfoReturnable<Boolean> ci) {
-		if (QuillConfig.ENCHS.get()) {
-			if (this == Enchantments.UNBREAKING) {
-				ci.setReturnValue(false);
-			}
+		if (QuillConfig.ENCHS.get() && QuillConfig.UNBREAKING.get()) {
+			ci.setReturnValue(false);
 		}
 	}
 
 	@Override
 	public boolean canApplyAtEnchantingTable(ItemStack stack) {
-		if (QuillConfig.ENCHS.get()) {
-			if (this == Enchantments.UNBREAKING) {
-				return false;
-			}
+		if (QuillConfig.ENCHS.get() && QuillConfig.UNBREAKING.get()) {
+			return false;
 		}
 		return super.canApplyAtEnchantingTable(stack);
 	}
