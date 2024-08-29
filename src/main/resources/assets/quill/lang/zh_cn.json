@@ -1,13 +1,13 @@
 {
   "enchantment.quill.deflecting.desc": "Deflects arrows blocked with the shield, their base damage increasing with level",
-  "item.quill.cannonball": "Cannonball",
   "item.quill.salju": "Salju\u0027s Quillbook",
+  "item.quill.cannonball": "Cannonball",
   "enchantment.quill.spikes": "Spikes",
   "enchantment.quill.blazing.desc": "Sets attackers on fire",
-  "enchantment.quill.curse_of_zombie": "Curse of Undeathly Knelling",
+  "enchantment.quill.curse_of_zombie": "Curse of Knelling",
   "block.quill.trader_block": "贸易方块",
-  "enchantment.quill.auto_smelt.desc": "直接熔炼出矿石，攻击生物时附带燃烧",
   "item.quill.cannon": "Auto-Cannon",
+  "enchantment.quill.auto_smelt.desc": "直接熔炼出矿石，攻击生物时附带燃烧",
   "subtitles.cheers": "干杯",
   "enchantment.quill.curse_of_zombie.desc": "Blocking attracts zombies in a large radius with a chance of them attacking the attacker",
   "item.quill.magic_mirror": "Magic Mirror",
@@ -15,6 +15,7 @@
   "item.quill.netherite_horse_armor": "下界合金马甲",
   "item.quill.copper_cannonball": "Cannonball",
   "subtitles.cannon_shoot": "Shoots",
+  "enchantment.quill.magnetic.desc": "Pulls items towards the player while crouching",
   "enchantment.quill.sharpshooter.desc": "增加从弩射出箭的伤害",
   "itemGroup.quill": "Salju\u0027s Quill",
   "entity.quill.cannonball": "Cannonball",
@@ -24,5 +25,6 @@
   "subtitles.cannon_spin": "Spins",
   "enchantment.quill.blazing": "Blazing",
   "enchantment.quill.spikes.desc": "Deals damage to attackers",
-  "item.quill.bundle": "Bundle of Holding"
+  "item.quill.bundle": "Bundle of Holding",
+  "enchantment.quill.magnetic": "Magnetic"
 }

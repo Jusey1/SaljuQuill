@@ -17,10 +17,12 @@ import net.minecraftforge.event.entity.living.LivingGetProjectileEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.GrindstoneEvent;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.common.Tags;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Block;
@@ -77,6 +79,30 @@ import java.util.List;
 
 @Mod.EventBusSubscriber
 public class QuillEvents {
+	@SubscribeEvent
+	public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
+		if (event.phase == TickEvent.Phase.END) {
+			Player player = event.player;
+			if (!player.getItemBySlot(EquipmentSlot.CHEST).isEmpty() && player.getItemBySlot(EquipmentSlot.CHEST).isEnchanted()) {
+				int i = player.getItemBySlot(EquipmentSlot.CHEST).getEnchantmentLevel(QuillEnchantments.MAGNETIC.get());
+				if (i > 0) {
+					for (ItemEntity item : player.level().getEntitiesOfClass(ItemEntity.class, player.getBoundingBox().inflate(8.0 * i))) {
+						if (item.isAlive() && player.isCrouching() && QuillManager.isValidMagneticItem(player, item.getItem())) {
+							item.setNoGravity(true);
+							Vec3 v = player.getEyePosition().subtract(item.position());
+							if (item.level().isClientSide) {
+								item.yOld = item.getY();
+							}
+							item.setDeltaMovement(item.getDeltaMovement().scale(0.95D).add(v.normalize().scale(0.05D)));
+						} else {
+							item.setNoGravity(false);
+						}
+					}
+				}
+			}
+		}
+	}
+
 	@SubscribeEvent
 	public static void onHurt(LivingHurtEvent event) {
 		if (event.getEntity() != null && event.getSource().getDirectEntity() != null) {
@@ -410,7 +436,8 @@ public class QuillEvents {
 				event.setCost(i);
 				event.setMaterialCost(i);
 				event.setOutput(stack);
-			} else if (QuillConfig.ANBOOK.get() && (event.getLeft().isEnchantable() || event.getLeft().is(Items.ENCHANTED_BOOK) || event.getLeft().isEnchanted()) && (event.getRight().is(Items.ENCHANTED_BOOK) || (event.getRight().is(event.getLeft().getItem()) && event.getRight().isEnchanted()))) {
+			} else if (QuillConfig.ANBOOK.get() && (event.getLeft().isEnchantable() || event.getLeft().is(Items.ENCHANTED_BOOK) || event.getLeft().isEnchanted())
+					&& (event.getRight().is(Items.ENCHANTED_BOOK) || (event.getRight().is(event.getLeft().getItem()) && event.getRight().isEnchanted()))) {
 				Map<Enchantment, Integer> map = event.getLeft().isEnchanted() || event.getLeft().is(Items.ENCHANTED_BOOK) ? EnchantmentHelper.getEnchantments(event.getLeft().copy()) : Maps.newLinkedHashMap();
 				Map<Enchantment, Integer> book = EnchantmentHelper.getEnchantments(event.getRight());
 				int i = 0;

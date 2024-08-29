@@ -7,12 +7,9 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.EquipmentSlot;
 
-public class ShieldEnchantment extends Enchantment {
-	private final int max;
-
-	public ShieldEnchantment(Enchantment.Rarity rare, int i, EquipmentSlot... slots) {
-		super(rare, EnchantmentCategory.BREAKABLE, slots);
-		this.max = i;
+public class ShieldEnchantment extends QuillEnchantment {
+	public ShieldEnchantment(Enchantment.Rarity rare, EnchantmentCategory cate, int i, boolean check, EquipmentSlot... slots) {
+		super(rare, cate, i, check, slots);
 	}
 
 	@Override
@@ -26,17 +23,7 @@ public class ShieldEnchantment extends Enchantment {
 	}
 
 	@Override
-	public int getMaxLevel() {
-		return this.max;
-	}
-
-	@Override
 	public boolean canApplyAtEnchantingTable(ItemStack stack) {
 		return (stack.is(QuillTags.SHIELDS));
-	}
-
-	@Override
-	public boolean isCurse() {
-		return this != QuillEnchantments.ZOMBIE.get() ? false : true;
 	}
 }

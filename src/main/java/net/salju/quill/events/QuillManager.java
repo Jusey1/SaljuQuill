@@ -17,6 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ElytraItem;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.tags.DamageTypeTags;
@@ -44,6 +45,16 @@ public class QuillManager {
 		return done;
 	}
 
+	public static boolean isValidMagneticItem(Player player, ItemStack stack) {
+		int i = player.getInventory().getSlotWithRemainingSpace(stack);
+		if (player.isCreative()) {
+			return true;
+		} else if (player.isSpectator()) {
+			return false;
+		}
+		return (i < 0 ? (player.getInventory().getFreeSlot() >= 0) : true);
+	}
+
 	public static boolean isValidRepairItem(ItemStack stack, ItemStack material) {
 		if (stack.getItem() instanceof ElytraItem target) {
 			return target.isValidRepairItem(stack, material);
@@ -53,7 +64,7 @@ public class QuillManager {
 			return target.isValidRepairItem(stack, material);
 		} else if (material.is(Items.STICK)) {
 			return (stack.is(Items.BOW) || stack.is(Items.FISHING_ROD));
-		} else if (material.is(Items.IRON_INGOT)) {
+		} else if (material.is(Items.IRON_INGOT)) {
 			return (stack.is(Items.SHEARS) || stack.is(Items.FLINT_AND_STEEL) || stack.is(Items.CROSSBOW));
 		} else if (material.is(Items.COPPER_INGOT)) {
 			return (stack.is(Items.BRUSH));
