@@ -5,7 +5,6 @@
   "refmap": "quill.refmap.json",
   "mixins": [
      "CrossbowItemMixin",
-     "DiggerItemMixin",
      "AxeItemMixin",
      "SwordItemMixin",
      "ShieldItemMixin",
