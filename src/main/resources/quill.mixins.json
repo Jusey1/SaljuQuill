@@ -5,20 +5,15 @@
   "refmap": "quill.refmap.json",
   "mixins": [
      "CrossbowItemMixin",
-     "AxeItemMixin",
-     "SwordItemMixin",
      "ShieldItemMixin",
      "HorseArmorItemMixin",
      "ItemStackMixin",
      "EnchantmentHelperMixin",
-     "DamageEnchantmentMixin",
-     "DigDurabilityEnchantmentMixin",
-     "MendingEnchantmentMixin",
+     "EnchantmentMixin",
      "VillagerEnchantedBookMixin",
      "InventoryMixin",
      "ServerPlayerMixin",
-     "CreeperMixin"
-,
+     "CreeperMixin",
      "FletcherBlockMixin"
   ],
   "client": [

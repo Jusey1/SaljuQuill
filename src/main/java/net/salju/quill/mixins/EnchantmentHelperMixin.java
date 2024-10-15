@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.Mixin;
 import net.salju.quill.init.QuillTags;
 import net.salju.quill.init.QuillConfig;
-import net.minecraft.world.item.enchantment.EnchantmentInstance;
+import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.Items;
@@ -37,7 +37,7 @@ public abstract class EnchantmentHelperMixin {
 		if (QuillConfig.ENCHS.get()) {
 			ci.cancel();
 			int i = 0;
-			int m = stack.is(QuillTags.DOUBENCHS) ? QuillConfig.MAXENCH.get() * 2 : QuillConfig.MAXENCH.get();
+			int m = QuillConfig.MAXENCH.get() * (stack.is(QuillTags.DOUBENCHS) ? 2 : 1);
 			ListTag list = new ListTag();
 			for (Enchantment ench : map.keySet()) {
 				if (i < m || ench.isCurse()) {
@@ -72,4 +72,4 @@ public abstract class EnchantmentHelperMixin {
 			ci.setReturnValue(list);
 		}
 	}
-}
+}

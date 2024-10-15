@@ -19,6 +19,5 @@ public class QuillTabs {
 				tabData.accept(QuillItems.MAGIC_MIRROR.get());
 				tabData.accept(QuillItems.BUNDLE.get());
 				tabData.accept(QuillItems.TRADER_BLOCK.get());
-				tabData.accept(QuillItems.NETHERITE_HORSE_ARMOR.get());
 			}).build());
 }

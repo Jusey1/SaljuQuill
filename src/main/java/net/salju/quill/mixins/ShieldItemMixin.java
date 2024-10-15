@@ -14,6 +14,6 @@ public abstract class ShieldItemMixin extends Item implements Equipable {
 
 	@Override
 	public int getEnchantmentValue() {
-		return (QuillConfig.ENCHS.get() ? 1 : super.getEnchantmentValue());
+		return (QuillConfig.ENCHS.get() ? 5 : super.getEnchantmentValue());
 	}
 }

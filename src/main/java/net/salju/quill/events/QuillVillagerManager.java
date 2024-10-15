@@ -1,6 +1,5 @@
 package net.salju.quill.events;
 
-import net.salju.quill.init.QuillVillagers;
 import net.salju.quill.init.QuillEnchantments;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.item.trading.MerchantOffer;
@@ -83,7 +82,7 @@ public class QuillVillagerManager {
 			Item t = this.target;
 			if (entity instanceof Villager target) {
 				VillagerType type = target.getVillagerData().getType();
-				if (type == QuillVillagers.OCEAN.get() || type == VillagerType.SWAMP || type == VillagerType.JUNGLE) {
+				if (type == VillagerType.SWAMP || type == VillagerType.JUNGLE) {
 					if (t == Items.IRON_HELMET) {
 						t = Items.CHAINMAIL_HELMET;
 					} else if (t == Items.IRON_CHESTPLATE) {
@@ -132,38 +131,6 @@ public class QuillVillagerManager {
 		}
 	}
 
-	static class FishermanMaster implements VillagerTrades.ItemListing {
-		private final int xp;
-
-		public FishermanMaster(int i) {
-			this.xp = i;
-		}
-
-		@Override
-		public MerchantOffer getOffer(Entity entity, RandomSource rng) {
-			ItemStack stack = new ItemStack(Items.MANGROVE_BOAT);
-			int j = 1;
-			if (entity instanceof Villager target) {
-				VillagerType type = target.getVillagerData().getType();
-				if (type == VillagerType.PLAINS) {
-					stack = new ItemStack(Items.OAK_BOAT);
-				} else if (type == VillagerType.DESERT || type == VillagerType.JUNGLE) {
-					stack = new ItemStack(Items.JUNGLE_BOAT);
-				} else if (type == VillagerType.SAVANNA) {
-					stack = new ItemStack(Items.ACACIA_BOAT);
-				} else if (type == VillagerType.TAIGA || type == VillagerType.SNOW) {
-					stack = new ItemStack(Items.SPRUCE_BOAT);
-				} else if (type == VillagerType.SWAMP) {
-					stack = new ItemStack(Items.DARK_OAK_BOAT);
-				} else if (type == QuillVillagers.OCEAN.get()) {
-					stack = new ItemStack(Items.TRIDENT);
-					j = Mth.nextInt(rng, 32, 42);
-				}
-			}
-			return new MerchantOffer(new ItemStack(Items.EMERALD, j), stack, 4, this.xp, 0.2F);
-		}
-	}
-
 	static class EnchantBookMaster implements VillagerTrades.ItemListing {
 		private final int xp;
 
@@ -190,8 +157,6 @@ public class QuillVillagerManager {
 					ench = Enchantments.POWER_ARROWS;
 				} else if (type == VillagerType.SWAMP) {
 					ench = QuillEnchantments.ZOMBIE.get();
-				} else if (type == QuillVillagers.OCEAN.get()) {
-					ench = Enchantments.IMPALING;
 				}
 			}
 			int i = (ench.getMaxLevel() > 1 ? (ench.getMaxLevel() - 1) : 1);

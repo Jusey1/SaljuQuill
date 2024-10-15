@@ -7,8 +7,6 @@ public class QuillConfig {
 	public static final ForgeConfigSpec CONFIG;
 
 	public static final ForgeConfigSpec.BooleanValue USER;
-	public static final ForgeConfigSpec.BooleanValue SWORD;
-	public static final ForgeConfigSpec.BooleanValue AXER;
 	public static final ForgeConfigSpec.BooleanValue SHIELD;
 	public static final ForgeConfigSpec.BooleanValue FARMER;
 	public static final ForgeConfigSpec.IntValue ARROWS;
@@ -16,7 +14,6 @@ public class QuillConfig {
 	public static final ForgeConfigSpec.BooleanValue DEATH;
 	public static final ForgeConfigSpec.BooleanValue CREEPER;
 	public static final ForgeConfigSpec.BooleanValue TRADES;
-	public static final ForgeConfigSpec.BooleanValue OCEAN;
 	public static final ForgeConfigSpec.BooleanValue TAXI;
 	public static final ForgeConfigSpec.BooleanValue KICK;
 	public static final ForgeConfigSpec.BooleanValue CAMPFIRE;
@@ -34,8 +31,6 @@ public class QuillConfig {
 	static {
 		BUILDER.push("Block & Item Configuration");
 		USER = BUILDER.comment("Should basic items get a cooldown during use after being hit by an enemy?").define("Basic Cooldown", true);
-		SWORD = BUILDER.comment("Should swords have the parry ability?").define("Sword Parrying", true);
-		AXER = BUILDER.comment("Should vanilla axes be rebalanced?").define("Rebalanced Axes", true);
 		SHIELD = BUILDER.comment("Should the shield be prioritized when using it with an axe while right-clicking on copper & logs?").define("I Wanna Block", true);
 		FARMER = BUILDER.comment("Should hoes have the ability to harvest crops?").define("Hoe Harvesting", true);
 		ARROWS = BUILDER.comment("How many arrows can be crafted with the Fletching Table?").defineInRange("Arrow Count", 8, 4, 64);
@@ -44,7 +39,6 @@ public class QuillConfig {
 		DEATH = BUILDER.comment("Should hotbar & equipment be kept on death?").define("Death Protection", true);
 		CREEPER = BUILDER.comment("Should creepers be prideful?").define("Prideful Creepers", true);
 		TRADES = BUILDER.comment("Should updated villager trades be enabled?").define("Villager Trade Rebalance", true);
-		OCEAN = BUILDER.comment("Should ocean villagers be enabled?").define("Pirate Villagers", true);
 		TAXI = BUILDER.comment("Should villagers join a player's camel or boat by simply being nearby?").define("Taxi Camel", true);
 		KICK = BUILDER.comment("Should the player be able to crouch right-click entities off of what they are riding?").define("Kick Them Off", true);
 		CAMPFIRE = BUILDER.comment("Should campfires disable enemy spawning if lit?").define("Campfire Protection", true);

@@ -4,7 +4,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.Mixin;
-import net.salju.quill.init.QuillVillagers;
 import net.salju.quill.init.QuillEnchantments;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -52,9 +51,6 @@ public class VillagerEnchantedBookMixin {
 				ench = list.get(e);
 			} else if (type == VillagerType.SWAMP) {
 				List<Enchantment> list = getSwamp();
-				ench = list.get(e);
-			} else if (type == QuillVillagers.OCEAN.get()) {
-				List<Enchantment> list = getOcean();
 				ench = list.get(e);
 			}
 		}
@@ -120,14 +116,6 @@ public class VillagerEnchantedBookMixin {
 		magic.add(Enchantments.DEPTH_STRIDER);
 		magic.add(Enchantments.RESPIRATION);
 		magic.add(Enchantments.AQUA_AFFINITY);
-		return magic;
-	}
-
-	private List<Enchantment> getOcean() {
-		List<Enchantment> magic = Lists.newArrayList();
-		magic.add(Enchantments.CHANNELING);
-		magic.add(Enchantments.RIPTIDE);
-		magic.add(Enchantments.LOYALTY);
 		return magic;
 	}
 }

@@ -20,9 +20,8 @@ public class QuillClientManager {
 	public static Player getPlayer(LogicalSide side) {
 		if (side.isClient()) {
 			return Minecraft.getInstance().player;
-		} else {
-			return null;
 		}
+		return null;
 	}
 
 	public static void creeperFireworks(Level world, double x, double y, double z) {

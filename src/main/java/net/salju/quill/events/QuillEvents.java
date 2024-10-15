@@ -1,6 +1,5 @@
 package net.salju.quill.events;
 
-import net.salju.quill.init.QuillVillagers;
 import net.salju.quill.init.QuillTags;
 import net.salju.quill.init.QuillEnchantments;
 import net.salju.quill.init.QuillConfig;
@@ -15,8 +14,6 @@ import net.minecraftforge.event.entity.living.MobSpawnEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingGetProjectileEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.GrindstoneEvent;
 import net.minecraftforge.event.AnvilUpdateEvent;
@@ -33,7 +30,6 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStack;
@@ -48,14 +44,12 @@ import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.npc.VillagerProfession;
-import net.minecraft.world.entity.npc.VillagerData;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.monster.Phantom;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.animal.camel.Camel;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ExperienceOrb;
@@ -65,7 +59,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Mth;
-import net.minecraft.tags.BiomeTags;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.server.level.ServerLevel;
@@ -113,50 +107,11 @@ public class QuillEvents {
 					double x = direct.getPersistentData().getDouble("Sharpshooter");
 					event.setAmount((float) (Math.round(Mth.nextInt(RandomSource.create(), 7, 11)) + (2.5 * x)));
 				}
-			} else if (direct instanceof LivingEntity attacker) {
-				if (attacker.getMainHandItem().getEnchantmentLevel(QuillEnchantments.AUTO_SMELT.get()) > 0) {
-					target.setSecondsOnFire(3);
-				}
-				if (target.isUsingItem()) {
-					ItemStack stack = target.getUseItem();
-					if (stack.getItem() instanceof SwordItem && QuillManager.isBlocked(event.getSource(), target)) {
-						float d = (((float) target.getAttributeValue(Attributes.ATTACK_DAMAGE) - 2.0F) + EnchantmentHelper.getDamageBonus(stack, attacker.getMobType()));
-						event.setAmount(event.getAmount() * 0.75F);
-						target.swing(target.getUsedItemHand(), true);
-						if (target instanceof Player player) {
-							attacker.hurt(player.damageSources().playerAttack(player), d);
-							if (player.level() instanceof ServerLevel lvl && d > 2.0F) {
-								lvl.sendParticles(ParticleTypes.DAMAGE_INDICATOR, attacker.getX(), attacker.getY(0.5), attacker.getZ(), (int) (d * 0.5F), 0.15, 0.0, 0.15, 0.25);
-							}
-						} else {
-							attacker.hurt(target.damageSources().mobAttack(target), d);
-						}
-						stack.getItem().hurtEnemy(stack, attacker, target);
-					}
-					if (stack.getUseDuration() <= 64 && QuillConfig.USER.get()) {
-						target.stopUsingItem();
-						if (target instanceof Player player) {
-							player.getCooldowns().addCooldown(stack.getItem(), stack.getItem() instanceof SwordItem ? 30 : 12);
-						}
-					}
-				}
-			}
-		}
-	}
-
-	@SubscribeEvent
-	public static void onDamage(LivingDamageEvent event) {
-		if (event.getEntity() != null && event.getSource().getDirectEntity() != null) {
-			Entity direct = event.getSource().getDirectEntity();
-			LivingEntity target = event.getEntity();
-			if (direct instanceof Projectile proj && target.attackable()) {
-				if (proj.getOwner() instanceof Player player) {
-					float d = event.getAmount();
-					if (target.getHealth() < event.getAmount()) {
-						d = target.getHealth();
-					}
-					if (player.level() instanceof ServerLevel lvl && d > 2.0F && target.attackable() && !event.isCanceled()) {
-						lvl.sendParticles(ParticleTypes.DAMAGE_INDICATOR, target.getX(), target.getY(0.5), target.getZ(), (int) (d * 0.5F), 0.15, 0.0, 0.15, 0.25);
+			} else if (direct instanceof LivingEntity && target.isUsingItem() && QuillConfig.USER.get()) {
+				if (target.getUseItem().getUseDuration() <= 64) {
+					target.stopUsingItem();
+					if (target instanceof Player player) {
+						player.getCooldowns().addCooldown(target.getUseItem().getItem(), 12);
 					}
 				}
 			}
@@ -166,10 +121,8 @@ public class QuillEvents {
 	@SubscribeEvent
 	public static void onProjectile(LivingGetProjectileEvent event) {
 		if ((event.getProjectileWeaponItemStack().getItem() instanceof CrossbowItem || event.getProjectileWeaponItemStack().getItem() instanceof BowItem) && event.getProjectileWeaponItemStack().getEnchantmentLevel(Enchantments.INFINITY_ARROWS) > 0) {
-			if (event.getProjectileItemStack().isEmpty()) {
+			if (event.getProjectileItemStack().isEmpty() || event.getProjectileItemStack().getItem() == Items.ARROW) {
 				event.setProjectileItemStack(new ItemStack(Items.ARROW));
-			} else if (event.getProjectileItemStack().getItem() == Items.ARROW) {
-				event.setProjectileItemStack(event.getProjectileItemStack().copy());
 			}
 		}
 	}
@@ -178,11 +131,10 @@ public class QuillEvents {
 	public static void onBlockAttack(ShieldBlockEvent event) {
 		if (event.getEntity() != null && event.getDamageSource().getDirectEntity() != null) {
 			ItemStack stack = event.getEntity().getUseItem();
-			int i = stack.getEnchantmentLevel(QuillEnchantments.SPIKES.get());
-			int e = stack.getEnchantmentLevel(QuillEnchantments.BLAZE.get());
-			int d = stack.getEnchantmentLevel(QuillEnchantments.DEFLECT.get());
-			int u = stack.getEnchantmentLevel(QuillEnchantments.ZOMBIE.get());
 			if (event.getDamageSource().getDirectEntity() instanceof LivingEntity target) {
+				int i = stack.getEnchantmentLevel(QuillEnchantments.SPIKES.get());
+				int e = stack.getEnchantmentLevel(QuillEnchantments.BLAZE.get());
+				int u = stack.getEnchantmentLevel(QuillEnchantments.ZOMBIE.get());
 				if (i > 0) {
 					if (event.getEntity() instanceof Player player) {
 						float fd = (target instanceof Phantom ? (float) (i * 2.5F) : (float) i);
@@ -219,6 +171,7 @@ public class QuillEvents {
 					target.setSecondsOnFire(e * 3);
 				}
 			} else if (event.getDamageSource().getDirectEntity() instanceof Projectile target) {
+				int d = stack.getEnchantmentLevel(QuillEnchantments.DEFLECT.get());
 				if (d > 0 && target instanceof Arrow && target.getOwner() != null) {
 					double x = Mth.nextDouble(event.getEntity().getRandom(), -0.15, 0.15);
 					double y = Mth.nextDouble(event.getEntity().getRandom(), -0.07, 0.07);
@@ -305,11 +258,6 @@ public class QuillEvents {
 				event.getTrades().put(5, master);
 			}
 		}
-		if (event.getType() == VillagerProfession.FISHERMAN && QuillConfig.OCEAN.get()) {
-			master.remove(1);
-			master.add(new QuillVillagerManager.FishermanMaster(25));
-			event.getTrades().put(5, master);
-		}
 	}
 
 	@SubscribeEvent
@@ -320,15 +268,6 @@ public class QuillEvents {
 				if ((player.getVehicle() instanceof Camel || player.getVehicle() instanceof Boat) && player.getVehicle().getPassengers().size() < 2) {
 					target.startRiding(player.getVehicle());
 				}
-			}
-		}
-	}
-
-	@SubscribeEvent
-	public static void onEntitySpawned(EntityJoinLevelEvent event) {
-		if (QuillConfig.OCEAN.get()) {
-			if (event.getEntity() instanceof Villager target && target.level().getBiome(BlockPos.containing(target.getX(), target.getY(), target.getZ())).is(BiomeTags.IS_OCEAN) && !event.loadedFromDisk()) {
-				target.setVillagerData(new VillagerData(QuillVillagers.OCEAN.get(), VillagerProfession.NONE, 1));
 			}
 		}
 	}
@@ -351,7 +290,7 @@ public class QuillEvents {
 		ItemStack stack = event.getItemStack();
 		BlockPos pos = event.getPos();
 		BlockState state = world.getBlockState(pos);
-		if (state.is(QuillTags.LB) && stack.is(QuillTags.LI) && state.getBlock().asItem() == stack.getItem()) {
+		if (state.is(BlockTags.CLIMBABLE) && state.getBlock().asItem() == stack.getItem()) {
 			if (world.isEmptyBlock(pos.below())) {
 				world.setBlock(pos.below(), state, 3);
 				world.playSound(player, pos.below(), state.getSoundType(world, pos.below(), player).getPlaceSound(), SoundSource.BLOCKS);
@@ -527,4 +466,4 @@ public class QuillEvents {
 			}
 		}
 	}
-}
+}
