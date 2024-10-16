@@ -15,7 +15,6 @@ import net.minecraft.world.item.ArmorItem;
 
 public class QuillItems {
 	public static final DeferredRegister<Item> REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, QuillMod.MODID);
-	public static final RegistryObject<Item> TRADER_BLOCK = block(QuillBlocks.TRADER_BLOCK);
 	public static final RegistryObject<Item> SALJU = REGISTRY.register("salju", () -> new Item(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
 	public static final RegistryObject<Item> MAGIC_MIRROR = REGISTRY.register("magic_mirror", () -> new MagicMirrorItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
 	public static final RegistryObject<Item> BUNDLE = REGISTRY.register("bundle", () -> new BundleItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));

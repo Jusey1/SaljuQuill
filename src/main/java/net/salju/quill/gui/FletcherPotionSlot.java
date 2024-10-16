@@ -1,5 +1,7 @@
 package net.salju.quill.gui;
 
+import net.salju.quill.init.QuillConfig;
+import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStack;
@@ -13,7 +15,7 @@ public class FletcherPotionSlot extends Slot {
 
 	@Override
 	public boolean mayPlace(ItemStack stack) {
-		return (stack.getItem() instanceof PotionItem || stack.is(Items.GLOWSTONE_DUST));
+		return stack.getItem() instanceof PotionItem;
 	}
 
 	@Override
@@ -22,5 +24,20 @@ public class FletcherPotionSlot extends Slot {
 			return 1;
 		}
 		return super.getMaxStackSize(stack);
+	}
+
+	@Override
+	public void setChanged() {
+		super.setChanged();
+		if (this.container.getItem(0).is(Items.FLINT) && this.container.getItem(1).is(Items.STICK) && this.container.getItem(2).is(Items.FEATHER)) {
+			ItemStack stack = new ItemStack(Items.ARROW);
+			if (this.container.getItem(3).getItem() instanceof PotionItem) {
+				stack = PotionUtils.setPotion(new ItemStack(Items.TIPPED_ARROW), PotionUtils.getPotion(this.container.getItem(3)));
+			}
+			stack.setCount(QuillConfig.ARROWS.get());
+			this.container.setItem(4, stack);
+		} else {
+			this.container.setItem(4, ItemStack.EMPTY);
+		}
 	}
 }

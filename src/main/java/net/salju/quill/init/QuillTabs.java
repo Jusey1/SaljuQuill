@@ -18,6 +18,5 @@ public class QuillTabs {
 				tabData.accept(QuillItems.COPPER_CANNONBALL.get());
 				tabData.accept(QuillItems.MAGIC_MIRROR.get());
 				tabData.accept(QuillItems.BUNDLE.get());
-				tabData.accept(QuillItems.TRADER_BLOCK.get());
 			}).build());
 }

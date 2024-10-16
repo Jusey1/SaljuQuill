@@ -28,7 +28,7 @@ public class FletcherGuiMenu extends AbstractContainerMenu {
 		this.addSlot(new FletcherSlot(con, 1, 30, 37, Items.STICK));
 		this.addSlot(new FletcherSlot(con, 2, 30, 55, Items.FEATHER));
 		this.addSlot(new FletcherPotionSlot(con, 3, 66, 37));
-		this.addSlot(new FletcherResultSlot(con, 4, 124, 37));
+		this.addSlot(new FletcherResultSlot(inv.player, con, 4, 124, 37));
 		for (int k = 0; k < 3; ++k) {
 			for (int i1 = 0; i1 < 9; ++i1) {
 				this.addSlot(new Slot(inv, i1 + k * 9 + 9, 8 + i1 * 18, 88 + k * 18));
@@ -57,7 +57,7 @@ public class FletcherGuiMenu extends AbstractContainerMenu {
 				if (!this.moveItemStackTo(slotstack, 5, 41, true)) {
 					return ItemStack.EMPTY;
 				}
-			} else if (!this.moveItemStackTo(slotstack, 0, 5, false)) {
+			} else if (!this.moveItemStackTo(slotstack, 0, 4, false)) {
 				return ItemStack.EMPTY;
 			}
 			if (slotstack.isEmpty()) {
@@ -76,6 +76,13 @@ public class FletcherGuiMenu extends AbstractContainerMenu {
 	@Override
 	public void removed(Player player) {
 		super.removed(player);
+		for (int i = 0; i < 4; ++i) {
+			ItemStack stack = this.crafter.getItem(i);
+			if (!stack.isEmpty()) {
+				player.addItem(stack);
+			}
+		}
+		this.crafter.clearContent();
 		this.crafter.stopOpen(player);
 	}
 }
