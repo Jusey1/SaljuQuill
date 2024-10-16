@@ -4,10 +4,9 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "quill.refmap.json",
   "mixins": [
-     "CrossbowItemMixin",
-     "ShieldItemMixin",
-     "HorseArmorItemMixin",
+     "ItemMixin",
      "ItemStackMixin",
+     "CrossbowItemMixin",
      "EnchantmentHelperMixin",
      "EnchantmentMixin",
      "VillagerEnchantedBookMixin",

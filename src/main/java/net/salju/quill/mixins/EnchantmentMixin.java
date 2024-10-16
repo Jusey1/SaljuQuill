@@ -5,13 +5,16 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.Mixin;
 import net.salju.quill.init.QuillConfig;
-import net.minecraft.world.item.enchantment.MendingEnchantment;
+import net.minecraft.world.item.enchantment.ProtectionEnchantment;
+import net.minecraft.world.item.enchantment.MendingEnchantment;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.DiggingEnchantment;
 import net.minecraft.world.item.enchantment.DigDurabilityEnchantment;
 import net.minecraft.world.item.enchantment.DamageEnchantment;
 import net.minecraft.world.item.enchantment.ArrowInfiniteEnchantment;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.HorseArmorItem;
 import net.minecraft.world.item.DiggerItem;
 import net.minecraft.world.item.CrossbowItem;
 
@@ -27,6 +30,8 @@ public class EnchantmentMixin {
 				ci.setReturnValue(true);
 			} else if ((thys instanceof DigDurabilityEnchantment || thys instanceof MendingEnchantment) && QuillConfig.UNBREAKING.get()) {
 				ci.setReturnValue(false);
+			} else if ((thys.category == EnchantmentCategory.ARMOR_FEET || thys instanceof ProtectionEnchantment) && stack.getItem() instanceof HorseArmorItem) {
+				ci.setReturnValue(true);
 			}
 		}
 	}
@@ -37,7 +42,7 @@ public class EnchantmentMixin {
 			Enchantment thys = (Enchantment) (Object) this;
 			if ((thys instanceof DiggingEnchantment || thys instanceof DamageEnchantment) && (ench instanceof DiggingEnchantment || ench instanceof DamageEnchantment)) {
 				ci.setReturnValue(false);
-			} else if ((thys instanceof DigDurabilityEnchantment || thys instanceof MendingEnchantment) && QuillConfig.UNBREAKING.get()) {
+			} else if ((thys instanceof DigDurabilityEnchantment || thys instanceof MendingEnchantment) && QuillConfig.UNBREAKING.get()) {
 				ci.setReturnValue(false);
 			}
 		}
