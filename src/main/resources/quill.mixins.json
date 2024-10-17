@@ -7,13 +7,14 @@
      "ItemMixin",
      "ItemStackMixin",
      "CrossbowItemMixin",
-     "EnchantmentHelperMixin",
+     "DiggerItemMixin",
+     "FletcherBlockMixin",
      "EnchantmentMixin",
+     "EnchantmentHelperMixin",
      "VillagerEnchantedBookMixin",
-     "InventoryMixin",
-     "ServerPlayerMixin",
      "CreeperMixin",
-     "FletcherBlockMixin"
+     "ServerPlayerMixin",
+     "InventoryMixin"
   ],
   "client": [
      "ItemInHandRendererMixin"

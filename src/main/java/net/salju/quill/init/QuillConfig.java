@@ -7,6 +7,7 @@ public class QuillConfig {
 	public static final ForgeConfigSpec CONFIG;
 
 	public static final ForgeConfigSpec.BooleanValue USER;
+	public static final ForgeConfigSpec.BooleanValue AXEMAN;
 	public static final ForgeConfigSpec.BooleanValue SHIELD;
 	public static final ForgeConfigSpec.BooleanValue FARMER;
 	public static final ForgeConfigSpec.IntValue ARROWS;
@@ -31,6 +32,7 @@ public class QuillConfig {
 	static {
 		BUILDER.push("Block & Item Configuration");
 		USER = BUILDER.comment("Should basic items get a cooldown during use after being hit by an enemy?").define("Basic Cooldown", true);
+		AXEMAN = BUILDER.comment("Should vanilla axes be +2 damage to their sword counterpart with 1.0 attack speed?").define("Rebalanced Axes", true);
 		SHIELD = BUILDER.comment("Should the shield be prioritized when using it with an axe while right-clicking on copper & logs?").define("I Wanna Block", true);
 		FARMER = BUILDER.comment("Should hoes have the ability to harvest crops?").define("Hoe Harvesting", true);
 		ARROWS = BUILDER.comment("How many arrows can be crafted with the Fletching Table?").defineInRange("Arrow Count", 8, 4, 64);
