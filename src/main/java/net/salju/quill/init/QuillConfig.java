@@ -15,6 +15,9 @@ public class QuillConfig {
 	public static final ForgeConfigSpec.BooleanValue DEATH;
 	public static final ForgeConfigSpec.BooleanValue CREEPER;
 	public static final ForgeConfigSpec.BooleanValue FROGGO;
+	public static final ForgeConfigSpec.BooleanValue PETS;
+	public static final ForgeConfigSpec.BooleanValue PEACEFUL;
+	public static final ForgeConfigSpec.BooleanValue NO;
 	public static final ForgeConfigSpec.BooleanValue TRADES;
 	public static final ForgeConfigSpec.BooleanValue TAXI;
 	public static final ForgeConfigSpec.BooleanValue KICK;
@@ -42,6 +45,9 @@ public class QuillConfig {
 		DEATH = BUILDER.comment("Should hotbar & equipment be kept on death?").define("Death Protection", true);
 		CREEPER = BUILDER.comment("Should creepers be prideful?").define("Prideful Creepers", true);
 		FROGGO = BUILDER.comment("Should witches turn Nitwits into frogs?").define("Frog Transfiguration", true);
+		PETS = BUILDER.comment("Should tagged pets be allowed to set to wander?").define("Wandering Pets", true);
+		PEACEFUL = BUILDER.comment("Should tagged mobs be peaceful by default unless provoked?").define("Peaceful Mobs", false);
+		NO = BUILDER.comment("Should tagged mobs be unallowed to grief blocks?").define("Stop That", false);
 		TRADES = BUILDER.comment("Should updated villager trades be enabled?").define("Villager Trade Rebalance", true);
 		TAXI = BUILDER.comment("Should villagers join a player's camel or boat by simply being nearby?").define("Taxi Camel", true);
 		KICK = BUILDER.comment("Should the player be able to crouch right-click entities off of what they are riding?").define("Kick Them Off", true);

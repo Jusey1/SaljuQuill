@@ -17,6 +17,8 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingGetProjectileEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingChangeTargetEvent;
+import net.minecraftforge.event.entity.EntityMobGriefingEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.GrindstoneEvent;
 import net.minecraftforge.event.AnvilUpdateEvent;
@@ -54,6 +56,7 @@ import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.animal.frog.Frog;
 import net.minecraft.world.entity.animal.camel.Camel;
+import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ExperienceOrb;
@@ -289,12 +292,38 @@ public class QuillEvents {
 	}
 
 	@SubscribeEvent
+	public static void onMobAttack(LivingChangeTargetEvent event) {
+		if (event.getEntity().getType().is(QuillTags.PEACEFUL) && QuillConfig.PEACEFUL.get() && event.getNewTarget() instanceof Player) {
+			if (event.getEntity().getLastHurtByMob() != event.getNewTarget()) {
+				event.setCanceled(true);
+			}
+		}
+	}
+
+	@SubscribeEvent
+	public static void onMobGrief(EntityMobGriefingEvent event) {
+		if (event.getEntity().getType().is(QuillTags.NO) && QuillConfig.NO.get()) {
+			event.setResult(Result.DENY);
+		}
+	}
+
+	@SubscribeEvent
 	public static void onRightClickEntity(PlayerInteractEvent.EntityInteract event) {
 		Player player = event.getEntity();
-		if (event.getTarget() instanceof LivingEntity target && QuillConfig.KICK.get()) {
-			if (target.isPassenger() && player.isCrouching()) {
-				target.stopRiding();
+		if (event.getTarget() instanceof LivingEntity target && player.isCrouching()) {
+			if (target.isPassenger() && QuillConfig.KICK.get()) {
 				player.swing(InteractionHand.MAIN_HAND, true);
+				target.stopRiding();
+			} else if (target.getType().is(QuillTags.PETS) && QuillConfig.PETS.get() && target instanceof TamableAnimal animal) {
+				if (animal.isOwnedBy(player)) {
+					if (animal.getPersistentData().getBoolean("isWandering")) {
+						animal.getPersistentData().remove("isWandering");
+						player.swing(InteractionHand.MAIN_HAND, true);
+						event.setCanceled(true);
+					} else if (animal.isOrderedToSit()) {
+						animal.getPersistentData().putBoolean("isWandering", true);
+					}
+				}
 			}
 		}
 	}
@@ -482,4 +511,4 @@ public class QuillEvents {
 			}
 		}
 	}
-}
+}

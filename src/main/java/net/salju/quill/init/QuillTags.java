@@ -10,6 +10,9 @@ import net.minecraft.core.registries.Registries;
 
 public class QuillTags {
 	public static final TagKey KOBOLDS = TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation("kobolds:kobolds"));
+	public static final TagKey PEACEFUL = TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation("quill:pets"));
+	public static final TagKey PETS = TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation("quill:pets"));
+	public static final TagKey NO = TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation("quill:no"));
 	public static final TagKey<Block> DND = BlockTags.create(new ResourceLocation("quill:dnd"));
 	public static final TagKey<Block> AXER = BlockTags.create(new ResourceLocation("quill:axe_blocks"));
 	public static final TagKey<Item> AXES = ItemTags.create(new ResourceLocation("quill:axes"));
