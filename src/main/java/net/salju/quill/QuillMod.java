@@ -26,6 +26,10 @@ public class QuillMod {
 	public QuillMod() {
 		MinecraftForge.EVENT_BUS.register(this);
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+		QuillEffects.REGISTRY.register(bus);
+		QuillPotions.REGISTRY.register(bus);
+		QuillFrogs.REGISTRY.register(bus);
+		QuillBlocks.REGISTRY.register(bus);
 		QuillItems.REGISTRY.register(bus);
 		QuillEnchantments.REGISTRY.register(bus);
 		QuillModSounds.REGISTRY.register(bus);

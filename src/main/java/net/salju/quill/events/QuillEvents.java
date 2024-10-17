@@ -1,6 +1,8 @@
 package net.salju.quill.events;
 
 import net.salju.quill.init.QuillTags;
+import net.salju.quill.init.QuillItems;
+import net.salju.quill.init.QuillFrogs;
 import net.salju.quill.init.QuillEnchantments;
 import net.salju.quill.init.QuillConfig;
 import net.minecraftforge.fml.common.Mod;
@@ -14,6 +16,7 @@ import net.minecraftforge.event.entity.living.MobSpawnEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingGetProjectileEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.GrindstoneEvent;
 import net.minecraftforge.event.AnvilUpdateEvent;
@@ -49,11 +52,13 @@ import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.monster.Phantom;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.animal.frog.Frog;
 import net.minecraft.world.entity.animal.camel.Camel;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.InteractionHand;
@@ -114,6 +119,15 @@ public class QuillEvents {
 						player.getCooldowns().addCooldown(target.getUseItem().getItem(), 12);
 					}
 				}
+			}
+		}
+	}
+
+	@SubscribeEvent
+	public static void onDeath(LivingDeathEvent event) {
+		if (event.getEntity().getType() == EntityType.MAGMA_CUBE && event.getSource() != null && event.getSource().getEntity() instanceof Frog frog) {
+			if (frog.getVariant() == QuillFrogs.WITCH.get()) {
+				event.getEntity().spawnAtLocation(new ItemStack(QuillItems.AZURE.get()));
 			}
 		}
 	}
@@ -262,11 +276,13 @@ public class QuillEvents {
 
 	@SubscribeEvent
 	public static void onTick(LivingEvent.LivingTickEvent event) {
-		if (event.getEntity() instanceof Villager target && QuillConfig.TAXI.get()) {
-			Player player = target.level().getNearestPlayer(target, 2);
-			if (player != null && player.isPassenger()) {
-				if ((player.getVehicle() instanceof Camel || player.getVehicle() instanceof Boat) && player.getVehicle().getPassengers().size() < 2) {
-					target.startRiding(player.getVehicle());
+		if (event.getEntity() instanceof Villager target) {
+			if (QuillConfig.TAXI.get()) {
+				Player player = target.level().getNearestPlayer(target, 2);
+				if (player != null && player.isPassenger()) {
+					if ((player.getVehicle() instanceof Camel || player.getVehicle() instanceof Boat) && player.getVehicle().getPassengers().size() < 2) {
+						target.startRiding(player.getVehicle());
+					}
 				}
 			}
 		}
