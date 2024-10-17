@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:enderman",
+    {
+      "id": "alexscaves:tremorzilla",
+      "required": false
+    },
+    {
+      "id": "alexscaves:mine_guardian",
+      "required": false
+    }
+  ]
+}
