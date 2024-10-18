@@ -10,6 +10,7 @@ import net.salju.quill.init.QuillConfig;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.HorseArmorItem;
 import net.minecraft.world.item.DiggerItem;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.core.BlockPos;
@@ -28,7 +29,7 @@ public abstract class ItemMixin {
 	public void isEnchantable(ItemStack stack, CallbackInfoReturnable<Boolean> ci) {
 		if (QuillConfig.ENCHS.get()) {
 			Item thys = (Item) (Object) this;
-			if (stack.is(QuillTags.SHIELDS)) {
+			if (stack.is(QuillTags.ENCHS) || thys instanceof HorseArmorItem) {
 				ci.setReturnValue(true);
 			}
 		}
@@ -38,9 +39,8 @@ public abstract class ItemMixin {
 	public void getValue(CallbackInfoReturnable<Integer> ci) {
 		if (QuillConfig.ENCHS.get()) {
 			Item thys = (Item) (Object) this;
-			ItemStack stack = new ItemStack(thys);
-			if (stack.is(QuillTags.SHIELDS)) {
-				ci.setReturnValue(1);
+			if (new ItemStack(thys).is(QuillTags.ENCHS) || thys instanceof HorseArmorItem) {
+				ci.setReturnValue(thys instanceof HorseArmorItem ? 15 : 1);
 			}
 		}
 	}

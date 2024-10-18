@@ -13,6 +13,7 @@ public class QuillTabs {
 	public static final DeferredRegister<CreativeModeTab> REGISTRY = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, QuillMod.MODID);
 	public static final RegistryObject<CreativeModeTab> QUILL = REGISTRY.register("quill",
 			() -> CreativeModeTab.builder().title(Component.translatable("itemGroup.quill")).icon(() -> new ItemStack(QuillItems.SALJU.get())).displayItems((parameters, tabData) -> {
+				tabData.accept(QuillItems.AZURE.get());
 				tabData.accept(QuillItems.CANNON.get());
 				tabData.accept(QuillItems.CANNONBALL.get());
 				tabData.accept(QuillItems.COPPER_CANNONBALL.get());

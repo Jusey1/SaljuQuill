@@ -17,6 +17,7 @@ public class QuillTags {
 	public static final TagKey<Block> AXER = BlockTags.create(new ResourceLocation("quill:axe_blocks"));
 	public static final TagKey<Item> AXES = ItemTags.create(new ResourceLocation("quill:axes"));
 	public static final TagKey<Item> SHIELDS = ItemTags.create(new ResourceLocation("quill:shields"));
+	public static final TagKey<Item> ENCHS = ItemTags.create(new ResourceLocation("quill:enchantables"));
 	public static final TagKey<Item> CANNON = ItemTags.create(new ResourceLocation("quill:cannon_recolor"));
 	public static final TagKey<Item> DOUBENCHS = ItemTags.create(new ResourceLocation("quill:double_enchantments"));
 }

@@ -177,7 +177,7 @@ public class QuillEvents {
 						if (billy.level() instanceof ServerLevel lvl) {
 							lvl.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, billy.getX(), billy.getY() + 1.05, billy.getZ(), 12, 0.45, 0.25, 0.45, 0);
 						}
-						if (target.isAlive() && !(target instanceof Zombie) && Math.random() >= 0.7) {
+						if (target.isAlive() && !(target instanceof Zombie) && Math.random() >= 0.95) {
 							billy.setTarget(target);
 						} else {
 							billy.setTarget(event.getEntity());

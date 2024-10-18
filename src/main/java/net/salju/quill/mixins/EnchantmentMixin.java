@@ -5,14 +5,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.Mixin;
 import net.salju.quill.init.QuillConfig;
-import net.minecraft.world.item.enchantment.ProtectionEnchantment;
-import net.minecraft.world.item.enchantment.MendingEnchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.DiggingEnchantment;
-import net.minecraft.world.item.enchantment.DigDurabilityEnchantment;
 import net.minecraft.world.item.enchantment.DamageEnchantment;
-import net.minecraft.world.item.enchantment.ArrowInfiniteEnchantment;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.HorseArmorItem;
 import net.minecraft.world.item.DiggerItem;
@@ -26,11 +22,11 @@ public class EnchantmentMixin {
 			Enchantment thys = (Enchantment) (Object) this;
 			if (thys instanceof DamageEnchantment && stack.getItem() instanceof DiggerItem) {
 				ci.setReturnValue(true);
-			} else if (thys instanceof ArrowInfiniteEnchantment && stack.getItem() instanceof CrossbowItem) {
+			} else if (thys == Enchantments.INFINITY_ARROWS && stack.getItem() instanceof CrossbowItem) {
 				ci.setReturnValue(true);
-			} else if ((thys instanceof DigDurabilityEnchantment || thys instanceof MendingEnchantment) && QuillConfig.UNBREAKING.get()) {
+			} else if ((thys == Enchantments.UNBREAKING || thys == Enchantments.MENDING) && QuillConfig.UNBREAKING.get()) {
 				ci.setReturnValue(false);
-			} else if ((thys.category == EnchantmentCategory.ARMOR_FEET || thys instanceof ProtectionEnchantment) && stack.getItem() instanceof HorseArmorItem) {
+			} else if ((thys.category == EnchantmentCategory.ARMOR_FEET || thys.category == EnchantmentCategory.ARMOR) && stack.getItem() instanceof HorseArmorItem) {
 				ci.setReturnValue(true);
 			}
 		}
@@ -40,9 +36,9 @@ public class EnchantmentMixin {
 	public void check(Enchantment ench, CallbackInfoReturnable<Boolean> ci) {
 		if (QuillConfig.ENCHS.get()) {
 			Enchantment thys = (Enchantment) (Object) this;
-			if ((thys instanceof DiggingEnchantment || thys instanceof DamageEnchantment) && (ench instanceof DiggingEnchantment || ench instanceof DamageEnchantment)) {
+			if ((thys == Enchantments.BLOCK_EFFICIENCY || thys instanceof DamageEnchantment) && (ench == Enchantments.BLOCK_EFFICIENCY || ench instanceof DamageEnchantment)) {
 				ci.setReturnValue(false);
-			} else if ((thys instanceof DigDurabilityEnchantment || thys instanceof MendingEnchantment) && QuillConfig.UNBREAKING.get()) {
+			} else if ((thys == Enchantments.UNBREAKING || thys == Enchantments.MENDING) && QuillConfig.UNBREAKING.get()) {
 				ci.setReturnValue(false);
 			}
 		}
@@ -52,7 +48,7 @@ public class EnchantmentMixin {
 	public void treasure(CallbackInfoReturnable<Boolean> ci) {
 		if (QuillConfig.ENCHS.get()) {
 			Enchantment thys = (Enchantment) (Object) this;
-			if ((thys instanceof DigDurabilityEnchantment || thys instanceof MendingEnchantment) && QuillConfig.UNBREAKING.get()) {
+			if ((thys == Enchantments.UNBREAKING || thys == Enchantments.MENDING) && QuillConfig.UNBREAKING.get()) {
 				ci.setReturnValue(true);
 			}
 		}
@@ -62,7 +58,7 @@ public class EnchantmentMixin {
 	public void trade(CallbackInfoReturnable<Boolean> ci) {
 		if (QuillConfig.ENCHS.get()) {
 			Enchantment thys = (Enchantment) (Object) this;
-			if ((thys instanceof DigDurabilityEnchantment || thys instanceof MendingEnchantment) && QuillConfig.UNBREAKING.get()) {
+			if ((thys == Enchantments.UNBREAKING || thys == Enchantments.MENDING) && QuillConfig.UNBREAKING.get()) {
 				ci.setReturnValue(false);
 			}
 		}
@@ -72,7 +68,7 @@ public class EnchantmentMixin {
 	public void discover(CallbackInfoReturnable<Boolean> ci) {
 		if (QuillConfig.ENCHS.get()) {
 			Enchantment thys = (Enchantment) (Object) this;
-			if ((thys instanceof DigDurabilityEnchantment || thys instanceof MendingEnchantment) && QuillConfig.UNBREAKING.get()) {
+			if ((thys == Enchantments.UNBREAKING || thys == Enchantments.MENDING) && QuillConfig.UNBREAKING.get()) {
 				ci.setReturnValue(false);
 			}
 		}
