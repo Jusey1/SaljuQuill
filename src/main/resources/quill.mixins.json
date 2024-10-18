@@ -10,6 +10,7 @@
      "DiggerItemMixin",
      "FletcherBlockMixin",
      "EnchantmentMixin",
+     "EnchantmentCategoryMixin",
      "EnchantmentHelperMixin",
      "VillagerEnchantedBookMixin",
      "CreeperMixin",
