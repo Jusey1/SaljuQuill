@@ -13,6 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.HorseArmorItem;
 import net.minecraft.world.item.DiggerItem;
 import net.minecraft.world.item.CrossbowItem;
+import net.minecraft.world.item.BrushItem;
 
 @Mixin(Enchantment.class)
 public class EnchantmentMixin {
@@ -27,6 +28,8 @@ public class EnchantmentMixin {
 			} else if ((thys == Enchantments.UNBREAKING || thys == Enchantments.MENDING) && QuillConfig.UNBREAKING.get()) {
 				ci.setReturnValue(false);
 			} else if ((thys.category == EnchantmentCategory.ARMOR_FEET || thys.category == EnchantmentCategory.ARMOR) && stack.getItem() instanceof HorseArmorItem) {
+				ci.setReturnValue(true);
+			} else if (thys == Enchantments.BLOCK_EFFICIENCY && stack.getItem() instanceof BrushItem) {
 				ci.setReturnValue(true);
 			}
 		}
