@@ -13,6 +13,7 @@
      "EnchantmentCategoryMixin",
      "EnchantmentHelperMixin",
      "VillagerEnchantedBookMixin",
+     "BrushableBlockEntityMixin",
      "CreeperMixin",
      "WitchMixin",
      "FollowOwnerGoalMixin",
